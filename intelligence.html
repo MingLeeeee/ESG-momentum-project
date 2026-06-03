@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligence Dashboard — ESG Momentum Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0e1a;--ink-2:#111827;--ink-3:#1e2a3a;--gold:#c9a84c;--gold-light:#e8c96a;--gold-dim:rgba(201,168,76,.15);--emerald:#00c896;--emerald-dim:rgba(0,200,150,.12);--crimson:#e84040;--crimson-dim:rgba(232,64,64,.12);--steel:#8ba4c0;--steel-dim:rgba(139,164,192,.1);--white:#f4f6f9;--white-2:#dde3ed;--glass:rgba(255,255,255,.04);--glass-2:rgba(255,255,255,.08);--border:rgba(139,164,192,.18);--border-gold:rgba(201,168,76,.3)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--ink);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden;min-height:100vh}body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(139,164,192,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,164,192,.04) 1px,transparent 1px);background-size:60px 60px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(10,14,26,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}.nav-logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--ink)}.nav-logo-text{font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--white);letter-spacing:.02em}.nav-logo-text span{color:var(--gold)}.nav-links{display:flex;align-items:center;gap:30px;list-style:none}.nav-links a{text-decoration:none;color:var(--steel);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;position:relative}.nav-links a:hover,.nav-links a.active{color:var(--gold)}.nav-links a.active::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--gold)}.nav-cta{background:var(--gold);color:var(--ink)!important;padding:10px 22px!important;border-radius:6px;font-weight:700!important;transition:background .2s!important}.nav-cta:hover{background:var(--gold-light)!important;color:var(--ink)!important}
+.page{position:relative;z-index:1;padding-top:96px}.hero-mini{padding:74px 60px 34px;text-align:center;background:linear-gradient(180deg,rgba(30,42,58,.55),rgba(10,14,26,.1));border-bottom:1px solid var(--border);position:relative;overflow:hidden}.hero-mini::before{content:'';position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.08),transparent 70%);left:50%;top:30%;transform:translate(-50%,-50%)}.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border-gold);padding:6px 16px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:26px}.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(42px,5vw,76px);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:18px}.hero-title .accent{color:var(--gold)}.hero-sub{max-width:760px;margin:0 auto;color:var(--steel);font-size:17px;font-weight:300;line-height:1.75}.section-inner{max-width:1200px;margin:0 auto;padding:70px 60px}.section-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}.section-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,48px);font-weight:700;line-height:1.1;margin-bottom:18px}.section-subtitle{font-size:16px;color:var(--steel);font-weight:300;max-width:650px;line-height:1.7}.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.dashboard-shell{margin-top:44px;background:var(--ink-2);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.38)}.dash-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--ink-3);border-bottom:1px solid var(--border)}.dash-dots{display:flex;gap:6px}.dash-dot{width:10px;height:10px;border-radius:50%}.dash-dot:nth-child(1){background:#ff5f57}.dash-dot:nth-child(2){background:#ffbd2e}.dash-dot:nth-child(3){background:#28c840}.dash-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--steel);letter-spacing:.06em}.dash-live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--emerald)}.dash-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
+.dash-body{display:grid;grid-template-columns:280px 1fr 320px;min-height:560px}.side-panel{border-right:1px solid var(--border);padding:22px}.right-panel{border-left:1px solid var(--border);padding:22px}.main-panel{padding:24px}.panel-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--steel);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border)}.company-item{display:flex;align-items:center;justify-content:space-between;padding:12px 10px;border-radius:8px;cursor:pointer;transition:background .2s;margin-bottom:5px}.company-item:hover,.company-item.active{background:var(--glass-2)}.company-item.active .co-name{color:var(--gold)}.co-info{display:flex;flex-direction:column}.co-name{font-size:13px;font-weight:600;color:var(--white)}.co-ticker{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--steel)}.co-score{font-family:'JetBrains Mono',monospace;font-size:13px}.up{color:var(--emerald)}.down{color:var(--crimson)}.flat{color:var(--gold)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}.kpi-box{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px}.kpi-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}.kpi-value{font-family:'Playfair Display',serif;font-size:26px;font-weight:700}.kpi-change{font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:4px}.card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px}.card-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--steel);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:flex;justify-content:space-between}.ai-box{background:var(--gold-dim);border:1px solid var(--border-gold);border-left:3px solid var(--gold);border-radius:10px;padding:16px;color:var(--white-2);font-size:13px;line-height:1.65}.ai-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold-light);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.alert-item{padding:12px;border-radius:9px;margin-bottom:9px;border-left:3px solid}.alert-red{background:var(--crimson-dim);border-color:var(--crimson)}.alert-green{background:var(--emerald-dim);border-color:var(--emerald)}.alert-gold{background:var(--gold-dim);border-color:var(--gold)}.alert-type{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.alert-red .alert-type{color:var(--crimson)}.alert-green .alert-type{color:var(--emerald)}.alert-gold .alert-type{color:var(--gold)}.alert-text{font-size:12px;color:var(--white-2);line-height:1.45}.alert-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--steel);margin-top:5px}
+.bar-list{display:flex;flex-direction:column;gap:13px}.bar-row{display:grid;grid-template-columns:110px 1fr 48px;gap:12px;align-items:center}.bar-name{font-size:12px;color:var(--white-2)}.bar-track{height:8px;border-radius:5px;background:var(--glass-2);overflow:hidden}.bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--emerald),var(--gold))}.bar-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);text-align:right}.matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.matrix-card{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:12px;padding:16px}.matrix-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:8px}.matrix-desc{font-size:13px;color:var(--steel);line-height:1.55}.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.pill{font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 9px;border-radius:4px;letter-spacing:.06em}.pill-gold{background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold)}.pill-green{background:var(--emerald-dim);border:1px solid rgba(0,200,150,.25);color:var(--emerald)}.pill-red{background:var(--crimson-dim);border:1px solid rgba(232,64,64,.25);color:var(--crimson)}.chart-bars{display:flex;align-items:flex-end;gap:7px;height:140px;padding-top:10px}.chart-bar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(to top,var(--emerald),var(--gold));min-height:20px}.table-row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--white-2)}.table-row.head{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--steel);letter-spacing:.08em}.signal{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.signal-green{background:var(--emerald-dim);color:var(--emerald);border:1px solid rgba(0,200,150,.25)}.signal-gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold)}.signal-red{background:var(--crimson-dim);color:var(--crimson);border:1px solid rgba(232,64,64,.25)}.back-link{display:inline-flex;margin-top:22px;color:var(--gold);font-size:13px;text-decoration:none;letter-spacing:.04em}.footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:34px 60px;color:var(--steel);font-size:12px;text-align:center}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:1024px){nav{padding:16px 24px}.nav-links{gap:16px}.dash-body{grid-template-columns:1fr}.side-panel,.right-panel{border:none;border-bottom:1px solid var(--border)}.kpi-grid{grid-template-columns:repeat(2,1fr)}.section-inner{padding:60px 24px}.hero-mini{padding:90px 24px 34px}.matrix{grid-template-columns:1fr}}@media(max-width:640px){.nav-links{display:none}.kpi-grid{grid-template-columns:1fr}.table-row{grid-template-columns:1fr}.dash-topbar{gap:16px;flex-direction:column}.hero-title{font-size:42px}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <a href="app2.html" class="nav-logo">
+    <div class="nav-logo-mark">E</div>
+    <span class="nav-logo-text">ESG <span>Momentum</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="app2.html">Overview</a></li>
+    <li><a href="risk.html" class="">Risk</a></li>
+    <li><a href="prediction.html" class="">Prediction</a></li>
+    <li><a href="intelligence.html" class="active">Intelligence</a></li>
+    <li><a href="opportunity.html" class="">Opportunity</a></li>
+    <li><a href="app2.html#cta" class="nav-cta">Request Demo</a></li>
+  </ul>
+</nav>
+<main class="page">
+<section class="hero-mini">
+  <div class="hero-badge">Raegan · Alternative Data & Sentiment Intelligence</div>
+  <h1 class="hero-title">Intelligence <span class="accent">Dashboard</span></h1>
+  <p class="hero-sub">Analyse market sentiment and hidden ESG signals using social/news controversy tracking, alternative data, market perception trends, and real-time sentiment indicators.</p>
+</section>
+<section><div class="section-inner">
+  <span class="section-tag">Question Answered</span>
+  <h2 class="section-title">How is the market reacting to ESG issues?</h2>
+  <p class="section-subtitle">This dashboard detects reactions from sentiment, news velocity, public perception, and alternative ESG data before traditional ESG scores change.</p>
+  <div class="dashboard-shell">
+    <div class="dash-topbar"><div class="dash-dots"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div><div class="dash-title">MARKET INTELLIGENCE · SENTIMENT & ALTERNATIVE DATA</div><div class="dash-live">LIVE</div></div>
+    <div class="dash-body"><div class="side-panel">
+  <div class="panel-label">Company Watchlist</div>
+  <div class="company-item active"><div class="co-info"><span class="co-name">DBS Group</span><span class="co-ticker">SGX: D05</span></div><span class="co-score up">78 ↑</span></div>
+  <div class="company-item"><div class="co-info"><span class="co-name">Grab Holdings</span><span class="co-ticker">NASDAQ: GRAB</span></div><span class="co-score up">64 ↑</span></div>
+  <div class="company-item"><div class="co-info"><span class="co-name">Maybank</span><span class="co-ticker">KLSE: 1155</span></div><span class="co-score flat">71 →</span></div>
+  <div class="company-item"><div class="co-info"><span class="co-name">Astra Intl</span><span class="co-ticker">IDX: ASII</span></div><span class="co-score down">52 ↓</span></div>
+  <div class="company-item"><div class="co-info"><span class="co-name">PTT PCL</span><span class="co-ticker">SET: PTT</span></div><span class="co-score down">44 ↓</span></div>
+</div>
+      <div class="main-panel">
+        <div class="kpi-grid">
+          <div class="kpi-box"><div class="kpi-label">Sentiment Index</div><div class="kpi-value" style="color:var(--emerald)">+64</div><div class="kpi-change up">↑ +8 today</div></div>
+          <div class="kpi-box"><div class="kpi-label">News Velocity</div><div class="kpi-value" style="color:var(--gold)">High</div><div class="kpi-change flat">126 mentions</div></div>
+          <div class="kpi-box"><div class="kpi-label">Controversy Heat</div><div class="kpi-value" style="color:var(--crimson)">Med</div><div class="kpi-change down">↑ Watch</div></div>
+          <div class="kpi-box"><div class="kpi-label">Alt Signals</div><div class="kpi-value">42</div><div class="kpi-change up">Live feeds</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Market Perception Trend <span>7-day view</span></div>
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:45%"></div><div class="chart-bar" style="height:50%"></div><div class="chart-bar" style="height:62%"></div><div class="chart-bar" style="height:58%"></div><div class="chart-bar" style="height:72%"></div><div class="chart-bar" style="height:66%"></div><div class="chart-bar" style="height:80%"></div>
+          </div>
+        </div>
+        <div class="matrix">
+          <div class="matrix-card"><div class="matrix-title">Sentiment Analysis</div><p class="matrix-desc">Tracks whether market conversation around a company is becoming more positive, negative, or uncertain.</p><div class="pill-row"><span class="pill pill-green">Social</span><span class="pill pill-gold">News Tone</span></div></div>
+          <div class="matrix-card"><div class="matrix-title">Alternative Data Signals</div><p class="matrix-desc">Uses non-traditional data like hiring trends, regulatory mentions, social sentiment, and ESG controversy volume.</p><div class="pill-row"><span class="pill pill-gold">Hiring</span><span class="pill pill-red">Controversy</span></div></div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="panel-label">Live Sentiment Feed</div>
+        <div class="alert-item alert-green"><div class="alert-type">Positive Sentiment</div><div class="alert-text">DBS green financing announcement gaining positive media traction.</div><div class="alert-time">12 min ago</div></div>
+        <div class="alert-item alert-gold"><div class="alert-type">Market Attention</div><div class="alert-text">Maybank ESG posts seeing increased discussion volume this week.</div><div class="alert-time">34 min ago</div></div>
+        <div class="alert-item alert-red"><div class="alert-type">Negative Signal</div><div class="alert-text">Astra environmental allegation gaining regional attention.</div><div class="alert-time">1 hr ago</div></div>
+        <div class="card"><div class="card-title">AI Sentiment Explanation</div><div class="ai-box"><div class="ai-label">Hidden signal</div>Sentiment improved because positive sustainability news is spreading faster than controversy signals. This suggests market confidence may improve before ESG rating updates.</div></div>
+      </div>
+    </div>
+  </div><a href="app2.html" class="back-link">← Back to Overview Dashboard</a>
+</div></section>
+</main><div class="footer">© 2025 ESG Momentum Engine · Intelligence Dashboard</div><script>
+(function(){
+  document.querySelectorAll('.company-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      document.querySelectorAll('.company-item').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>

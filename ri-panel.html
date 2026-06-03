@@ -1,0 +1,286 @@
+<!--
+  ╔═══════════════════════════════════════════════════════════╗
+  ║  ri-panel.html  —  Risk Intelligence HTML markup          ║
+  ║  Author : Moses Ng  ·  IT3852 BIP AY2026 S1              ║
+  ║                                                           ║
+  ║  WHERE IT LIVES IN risk-intelligence.html:                ║
+  ║  Lines 373–618. Placed inside .page-wrapper, directly     ║
+  ║  after </header> and before </footer>.                    ║
+  ║                                                           ║
+  ║  STRUCTURE:                                               ║
+  ║  · Company switcher toolbar  (sticky, lines 373–381)      ║
+  ║  · Sub-nav bar .ri-subnav    (sticky, lines 383–391)      ║
+  ║  · <main class="risk-section">                            ║
+  ║      · Scan overlay          (lines 395–399)              ║
+  ║      · TAB 1: Overview       (lines 401–438)              ║
+  ║      · TAB 2: Risk Scanner   (lines 440–472)              ║
+  ║      · TAB 3: Risk Classifier(lines 474–491)              ║
+  ║      · TAB 4: Severity Score (lines 493–511)              ║
+  ║      · TAB 5: AI Explanations(lines 513–519)              ║
+  ║      · TAB 6: Action Recs    (lines 521–527)              ║
+  ║  · Inline <script> block                                  ║
+  ║      · riShowTab()           (tab switcher)               ║
+  ║      · switchCompany()       (always → overview)          ║
+  ║  · <script src="js/ri-styles.js">                         ║
+  ║  · <script src="js/ri-logic.js">                          ║
+  ║  · DOMContentLoaded → runScanAnimation + renderRiskIntel  ║
+  ║                                                           ║
+  ║  ALL IDs used by ri-logic.js to inject content:           ║
+  ║  ri-scan-time, ri-gap-content, ri-feat-grid,              ║
+  ║  ri-high-count-label, ri-high-signals,                    ║
+  ║  ri-overview-timeline, ri-scanner-summary,                ║
+  ║  ri-source-bars, ri-severity-display-scanner,             ║
+  ║  ri-severity-breakdown-scanner, ri-feed-count,            ║
+  ║  ri-search, ri-feed-list, ri-heatmap-wrap,                ║
+  ║  ri-filter-bar, ri-classifier-grid, ri-severity-display,  ║
+  ║  ri-severity-breakdown, ri-trend-svg,                     ║
+  ║  ri-score-change-log, ri-explanation-feed, ri-action-feed ║
+  ╚═══════════════════════════════════════════════════════════╝
+-->
+
+  <!-- ── Company switcher (sticky) ─────────────────────── -->
+  <div class="risk-toolbar">
+    <div class="risk-toolbar__label">Company Context</div>
+    <div class="risk-company-switcher" aria-label="Company selector">
+      <button class="ri-company-btn active" type="button" onclick="switchCompany('DBS',this)">DBS Group</button>
+      <button class="ri-company-btn" type="button" onclick="switchCompany('GENT',this)">Genting</button>
+      <button class="ri-company-btn" type="button" onclick="switchCompany('GRAB',this)">Grab Holdings</button>
+    </div>
+  </div>
+
+  <!-- ── Sub-navigation tab bar ────────────────────────── -->
+  <nav class="ri-subnav" aria-label="Risk Intelligence sections">
+    <button class="ri-tab active"  onclick="riShowTab('overview',this)">Overview</button>
+    <button class="ri-tab" onclick="riShowTab('scanner',this)">Risk Scanner</button>
+    <button class="ri-tab" onclick="riShowTab('classifier',this)">Risk Classifier</button>
+    <button class="ri-tab" onclick="riShowTab('severity',this)">Severity Score</button>
+    <button class="ri-tab" onclick="riShowTab('explain',this)">AI Explanations</button>
+    <button class="ri-tab" onclick="riShowTab('actions',this)">Action Recommendations</button>
+  </nav>
+
+  <main class="risk-section">
+
+    <!-- ══ SCAN OVERLAY (shared across all tabs) ════════ -->
+    <div class="ri-scan-overlay" id="ri-scan-overlay">
+      <div class="ri-scan-progress-bar"><div class="ri-scan-progress-fill" id="ri-progress-fill"></div></div>
+      <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--steel);margin-top:.8rem;" id="ri-scan-status">Initialising scan…</div>
+    </div>
+
+    <!-- ══ TAB 1: OVERVIEW ══════════════════════════════ -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="ri-banner">
+        <div class="ri-banner-left">
+          <div class="ri-banner-title">Emerging ESG Risk Intelligence</div>
+          <div class="ri-banner-sub">AI-powered detection of emerging ESG risk signals that traditional frameworks miss · Real-time · ASEAN-focused</div>
+        </div>
+        <div class="ri-banner-right">
+          <div class="ri-live-dot"></div>
+          <span class="ri-live-label">LIVE SCAN</span>
+          <span class="ri-scan-time" id="ri-scan-time">—</span>
+        </div>
+      </div>
+
+      <!-- ESG Rating Gap -->
+      <div class="card mb" id="ri-gap-card">
+        <div class="card-title">ESG Rating Gap <span class="card-title-right">Our signals vs traditional framework · today</span></div>
+        <div id="ri-gap-content"></div>
+      </div>
+
+      <!-- Feature cards row -->
+      <div class="ri-feat-grid" id="ri-feat-grid"></div>
+
+      <!-- High-severity signals + recent timeline -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">High Severity Signals <span class="card-title-right" id="ri-high-count-label">All high-priority signals</span></div>
+          <div id="ri-high-signals"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Recent Signal Timeline <span class="card-title-right">Latest 3 detections</span></div>
+          <div id="ri-overview-timeline"></div>
+          <div style="margin-top:.8rem;">
+            <button onclick="riShowTab('scanner',document.querySelector('.ri-tab:nth-child(2)'))" style="background:none;border:none;color:var(--gold);font-family:var(--font-mono);font-size:.62rem;cursor:pointer;padding:0;letter-spacing:.06em;">View all in Scanner →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 2: RISK SCANNER ══════════════════════════ -->
+    <div class="tab-panel" id="panel-scanner">
+      <div class="two-col mb">
+        <!-- Scan stats -->
+        <div class="card">
+          <div class="card-title">Risk Scanner <span class="card-title-right">Scanning: News · Reports · Regulatory updates</span></div>
+          <div class="ri-scanner-summary" id="ri-scanner-summary"></div>
+          <div style="margin-top:1rem;">
+            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Signal Source Breakdown</div>
+            <div id="ri-source-bars"></div>
+          </div>
+        </div>
+        <!-- Severity score (compact in scanner) -->
+        <div class="card">
+          <div class="card-title">Risk Severity Score <span class="card-title-right">Composite · AI-assessed</span></div>
+          <div class="ri-severity-display" id="ri-severity-display-scanner"></div>
+          <div style="margin-top:1.2rem;">
+            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Severity by Category</div>
+            <div id="ri-severity-breakdown-scanner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live signal feed -->
+      <div class="card">
+        <div class="card-title">Signal Timeline <span class="card-title-right">Chronological · Signals detected before formal ESG rating updates</span></div>
+        <div class="ri-feed-header">
+          <span class="ri-feed-count" id="ri-feed-count">Showing — signals</span>
+        </div>
+        <input class="ri-search-input" type="text" id="ri-search" placeholder="Search signals by keyword…" oninput="riFilterFeed(this.value)">
+        <div class="ri-feed-list" id="ri-feed-list"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 3: RISK CLASSIFIER ════════════════════════ -->
+    <div class="tab-panel" id="panel-classifier">
+      <!-- Cross-company heatmap -->
+      <div class="card mb">
+        <div class="card-title">Cross-Company Heatmap <span class="card-title-right">Severity by category across all companies · click cell to view signals</span></div>
+        <div id="ri-heatmap-wrap"></div>
+      </div>
+
+      <!-- Full classifier grid -->
+      <div class="card">
+        <div class="card-title">
+          Risk Classifier
+          <span class="card-title-right">Categorised signals · E · S · G · AI/Digital</span>
+          <div class="ri-filter-bar" id="ri-filter-bar"></div>
+        </div>
+        <div class="ri-classifier-grid" id="ri-classifier-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 4: SEVERITY SCORE ════════════════════════ -->
+    <div class="tab-panel" id="panel-severity">
+      <div class="two-col mb">
+        <div class="card">
+          <div class="card-title">Composite Severity Score <span class="card-title-right">AI-assessed · emerging signals only</span></div>
+          <div class="ri-severity-display" id="ri-severity-display"></div>
+          <div style="margin-top:1.2rem;">
+            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Severity by Category</div>
+            <div id="ri-severity-breakdown"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Severity Trend <span class="card-title-right">Weekly score history · last 8 weeks</span></div>
+          <svg class="ri-trend-svg" id="ri-trend-svg" viewBox="0 0 500 120" preserveAspectRatio="none"></svg>
+          <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:1rem;margin-bottom:.6rem;">Score Change Log</div>
+          <div id="ri-score-change-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 5: AI EXPLANATIONS ════════════════════════ -->
+    <div class="tab-panel" id="panel-explain">
+      <div class="card">
+        <div class="card-title">AI Explanation Panel <span class="card-title-right">Why each signal matters to investors · click to expand</span></div>
+        <div id="ri-explanation-feed"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 6: ACTION RECOMMENDATIONS ════════════════ -->
+    <div class="tab-panel" id="panel-actions">
+      <div class="card">
+        <div class="card-title">Investor Action Recommendations <span class="card-title-right">Priority queue · AI-suggested next steps · track your workflow</span></div>
+        <div id="ri-action-feed"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Footer (unchanged) ─────────────────────────────── -->
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+    <div>
+      <a href="app2.html" class="nav-logo" aria-label="ESG Momentum Engine home">
+        <div class="nav-logo__mark" aria-hidden="true">E</div>
+        <span class="nav-logo__text">ESG <em>Momentum</em></span>
+      </a>
+      <p class="footer-brand__tagline">Real-time predictive ESG intelligence for ASEAN capital markets.</p>
+      <div class="footer-brand__badges">
+        <span class="footer-brand__badge">Singapore</span>
+        <span class="footer-brand__badge">CGSI Partner</span>
+        <span class="footer-brand__badge">AI-Powered</span>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col__title">Platform</div>
+      <ul class="footer-col__links">
+        <li><a href="app2.html#platform">Dashboard</a></li>
+        <li><a href="app2.html#value">Momentum Tracker</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col__title">Company</div>
+      <ul class="footer-col__links">
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="methodology.html">Methodology</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col__title">Resources</div>
+      <ul class="footer-col__links">
+        <li><a href="whitepaper.html">ESG Whitepaper</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer__bottom">
+    <span class="footer-copy">Copyright 2025 ESG Momentum Engine Pte. Ltd. | Singapore | UEN 202500000Z</span>
+    <nav class="footer-legal" aria-label="Legal links">
+      <a href="privacy.html">Privacy Policy</a><span aria-hidden="true">|</span>
+      <a href="terms.html">Terms of Service</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ── Scripts ────────────────────────────────────────── -->
+<script>
+(function(){
+  const toggle=document.getElementById('navToggle'),drawer=document.getElementById('navDrawer');
+  if(toggle&&drawer){
+    toggle.addEventListener('click',()=>{
+      const open=drawer.classList.toggle('open');
+      toggle.setAttribute('aria-expanded',open);
+      const bars=toggle.querySelectorAll('span');
+      if(open){bars[0].style.cssText='transform:translateY(7px) rotate(45deg)';bars[1].style.cssText='opacity:0';bars[2].style.cssText='transform:translateY(-7px) rotate(-45deg)';}
+      else{bars.forEach(b=>b.style.cssText='');}
+    });
+    drawer.querySelectorAll('a').forEach(l=>l.addEventListener('click',()=>{drawer.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.querySelectorAll('span').forEach(b=>b.style.cssText='');}));
+  }
+})();
+
+var ticker = 'DBS';
+
+/* Tab switching — only within the risk intelligence sub-nav */
+function riShowTab(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.ri-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+/* Company switch → always back to overview */
+function switchCompany(co, btn) {
+  ticker = co;
+  document.querySelectorAll('.ri-company-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  runScanAnimation(()=>renderRiskIntel());
+}
+</script>
+<script src="js/ri-styles.js"></script>
+<script src="js/ri-logic.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', ()=>{
+  runScanAnimation(()=>renderRiskIntel());
+});
+</script>

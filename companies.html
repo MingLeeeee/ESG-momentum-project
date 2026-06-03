@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Directory - ESG Momentum Engine 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app2.css">
+</head>
+<body class="directory-page">
+
+<div class="grid-bg"></div>
+
+<nav>
+  <a href="app.html" class="nav-logo">
+    <div class="nav-logo-mark">E</div>
+    <span class="nav-logo-text">ESG <span>Momentum</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="app.html">Home</a></li>
+    <li><a href="app.html#factors">Factors</a></li>
+    <li><a href="app.html#command-centre">Command Centre</a></li>
+    <li><a href="companies.html" style="color:var(--gold)">Companies</a></li>
+    <li><a href="app.html#asean">ASEAN</a></li>
+    <li><a href="app.html#pricing">Pricing</a></li>
+    <li><a href="app.html#partners">Partners</a></li>
+    <li><a href="app.html#cta" class="nav-cta">Request Demo</a></li>
+  </ul>
+</nav>
+
+<section class="company-explorer-section" id="company-explorer">
+  <div class="section-inner">
+    <div class="explorer-head">
+      <div>
+        <span class="section-tag reveal">Company Directory</span>
+        <h1 class="section-title reveal">Search, Select,<br>Analyse</h1>
+        <p class="section-subtitle reveal">Choose an ASEAN company, then open the detail dashboard for ESG score explanation, AI prediction, geopolitical risk, and peer comparison.</p>
+      </div>
+      <div class="explorer-search reveal">
+        <input class="company-search-input" id="companySearch" type="search" placeholder="Search company, country, sector, or ticker">
+        <div class="explorer-filters" id="companyFilters">
+          <button class="explorer-filter active" type="button" data-filter="all">All</button>
+          <button class="explorer-filter" type="button" data-filter="singapore">Singapore</button>
+          <button class="explorer-filter" type="button" data-filter="malaysia">Malaysia</button>
+          <button class="explorer-filter" type="button" data-filter="banking">Banking</button>
+          <button class="explorer-filter" type="button" data-filter="technology">Technology</button>
+          <button class="explorer-filter" type="button" data-filter="watch">Watch</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="directory-summary reveal">
+      <div class="directory-stat"><span>Companies</span><strong>6</strong></div>
+      <div class="directory-stat"><span>Markets</span><strong>4</strong></div>
+      <div class="directory-stat"><span>Attractive</span><strong>2</strong></div>
+      <div class="directory-stat"><span>Watchlist</span><strong>2</strong></div>
+    </div>
+
+    <div class="company-table-wrap reveal">
+      <table class="company-table" id="companyGrid" aria-label="ASEAN company ESG screener">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Country</th>
+            <th>Sector</th>
+            <th>ESG</th>
+            <th>AI Risk</th>
+            <th>Momentum</th>
+            <th>Signal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="company-row" data-search="dbs group holdings dbs singapore banking sgx attractive strong low">
+            <td><strong>DBS Group Holdings</strong><span>DBS - SGX:D05</span></td>
+            <td>Singapore</td>
+            <td>Banking</td>
+            <td><b class="score-positive">74.2</b></td>
+            <td><span class="risk-pill low">Low</span></td>
+            <td><span class="momentum-positive">+1.8</span></td>
+            <td><span class="signal-pill attractive">Attractive</span></td>
+            <td><a class="table-action" href="detail.html?ticker=DBS">View Analysis</a></td>
+          </tr>
+          <tr class="company-row" data-search="grab holdings grab singapore technology nasdaq attractive moderate medium">
+            <td><strong>Grab Holdings</strong><span>GRAB - NASDAQ:GRAB</span></td>
+            <td>Singapore</td>
+            <td>Technology</td>
+            <td><b class="score-neutral">68.5</b></td>
+            <td><span class="risk-pill medium">Medium</span></td>
+            <td><span class="momentum-positive">+2.4</span></td>
+            <td><span class="signal-pill attractive">Attractive</span></td>
+            <td><a class="table-action" href="detail.html?ticker=GRAB">View Analysis</a></td>
+          </tr>
+          <tr class="company-row" data-search="genting berhad gent malaysia consumer bursa watch high">
+            <td><strong>Genting Berhad</strong><span>GENT - Bursa Malaysia</span></td>
+            <td>Malaysia</td>
+            <td>Consumer</td>
+            <td><b class="score-watch">55.1</b></td>
+            <td><span class="risk-pill high">High</span></td>
+            <td><span class="momentum-negative">-3.1</span></td>
+            <td><span class="signal-pill watch">Watch</span></td>
+            <td><a class="table-action" href="detail.html?ticker=GENT">View Analysis</a></td>
+          </tr>
+          <tr class="company-row" data-search="maybank malaysia banking klse neutral moderate medium">
+            <td><strong>Maybank</strong><span>MAYBANK - KLSE:1155</span></td>
+            <td>Malaysia</td>
+            <td>Banking</td>
+            <td><b class="score-neutral">67.2</b></td>
+            <td><span class="risk-pill medium">Medium</span></td>
+            <td><span class="momentum-flat">Stable</span></td>
+            <td><span class="signal-pill neutral">Neutral</span></td>
+            <td><a class="table-action" href="detail.html?ticker=MAYBANK">View Analysis</a></td>
+          </tr>
+          <tr class="company-row" data-search="ptt pcl thailand energy set watch weak high">
+            <td><strong>PTT PCL</strong><span>PTT - SET:PTT</span></td>
+            <td>Thailand</td>
+            <td>Energy</td>
+            <td><b class="score-watch">44.8</b></td>
+            <td><span class="risk-pill high">High</span></td>
+            <td><span class="momentum-negative">Down</span></td>
+            <td><span class="signal-pill watch">Watch</span></td>
+            <td><a class="table-action" href="detail.html?ticker=PTT">View Analysis</a></td>
+          </tr>
+          <tr class="company-row" data-search="sm prime smph philippines real estate pse neutral moderate medium">
+            <td><strong>SM Prime</strong><span>SMPH - PSE:SMPH</span></td>
+            <td>Philippines</td>
+            <td>Real Estate</td>
+            <td><b class="score-neutral">69.2</b></td>
+            <td><span class="risk-pill medium">Medium</span></td>
+            <td><span class="momentum-positive">+1.1</span></td>
+            <td><span class="signal-pill neutral">Neutral</span></td>
+            <td><a class="table-action" href="detail.html?ticker=SMPH">View Analysis</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="explorer-empty" id="companyEmpty">No company matches your search.</div>
+  </div>
+</section>
+
+<script src="js/app2.js"></script>
+</body>
+</html>

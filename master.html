@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAGE TITLE — ESG Momentum Engine 2.0</title>
+
+<!--
+╔══════════════════════════════════════════════════════════════════════════╗
+║        ESG MOMENTUM ENGINE 2.0 — MASTER PAGE                            ║
+║        Universal structure: nav, footer, design tokens, base styles      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  USAGE                                                                   ║
+║  1. Copy this file → rename (e.g. about.html, dashboard.html)            ║
+║  2. Update <title>                                                       ║
+║  3. Mark active nav link: add class="active" to current page <a>         ║
+║  4. Write your page content inside <!-- PAGE CONTENT -->                 ║
+║  5. Never touch the nav, footer, or CSS above the PAGE STYLES comment    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ── FONTS ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — edit here to retheme the entire site
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  /* Backgrounds */
+  --ink:          #0a0e1a;
+  --ink-2:        #111827;
+  --ink-3:        #1e2a3a;
+
+  /* Brand */
+  --gold:         #c9a84c;
+  --gold-light:   #e8c96a;
+  --gold-dim:     rgba(201, 168, 76, 0.15);
+
+  /* Status colours */
+  --emerald:      #00c896;
+  --emerald-dim:  rgba(0, 200, 150, 0.12);
+  --crimson:      #e84040;
+  --crimson-dim:  rgba(232, 64, 64, 0.12);
+
+  /* Neutrals */
+  --steel:        #8ba4c0;
+  --steel-dim:    rgba(139, 164, 192, 0.10);
+  --white:        #f4f6f9;
+  --white-2:      #dde3ed;
+
+  /* Surfaces */
+  --glass:        rgba(255, 255, 255, 0.04);
+  --glass-2:      rgba(255, 255, 255, 0.08);
+  --border:       rgba(139, 164, 192, 0.18);
+  --border-gold:  rgba(201, 168, 76, 0.30);
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+  /* Nav height — used to offset page content */
+  --nav-h: 76px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RESET
+   ════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ── Grid background ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(var(--steel-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--steel-dim) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NAVIGATION
+   ════════════════════════════════════════════════════════════════ */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px;
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Logo */
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; flex-shrink: 0;
+}
+.nav-logo__mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 18px; color: var(--ink);
+  flex-shrink: 0;
+}
+.nav-logo__text {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 16px;
+  color: var(--white); letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.nav-logo__text em { font-style: normal; color: var(--gold); }
+
+/* Primary links */
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  color: var(--steel);
+  letter-spacing: 0.07em; text-transform: uppercase;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-links a:hover        { color: var(--gold); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-links a.active       { color: var(--gold); }
+.nav-links a.active::after{ transform: scaleX(1); }
+
+/* CTA pill */
+.nav-cta {
+  display: inline-flex; align-items: center;
+  background: var(--gold);
+  color: var(--ink) !important;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  transition: background 0.2s, box-shadow 0.2s !important;
+  white-space: nowrap;
+}
+.nav-cta::after { display: none !important; }
+.nav-cta:hover  {
+  background: var(--gold-light) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.35) !important;
+}
+
+/* Mobile hamburger (hidden by default) */
+.nav-hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px;
+  background: none; border: none;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--white); border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* Mobile drawer */
+.nav-drawer {
+  display: none;
+  position: fixed; top: var(--nav-h); left: 0; right: 0;
+  background: rgba(10,14,26,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 32px 32px;
+  z-index: 499;
+  flex-direction: column; gap: 4px;
+}
+.nav-drawer.open { display: flex; }
+.nav-drawer a {
+  display: block; padding: 12px 8px;
+  text-decoration: none; font-size: 14px;
+  color: var(--steel); font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--gold); }
+.nav-drawer a:last-child { border-bottom: none; }
+.nav-drawer .nav-cta {
+  margin-top: 16px; text-align: center;
+  border-radius: 8px; padding: 14px 22px;
+  font-size: 13px !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PAGE WRAPPER
+   ════════════════════════════════════════════════════════════════ */
+.page-wrapper {
+  position: relative; z-index: 1;
+  padding-top: var(--nav-h);
+  flex: 1;                     /* pushes footer to bottom */
+  display: flex; flex-direction: column;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SHARED LAYOUT HELPERS  (available on every page)
+   ════════════════════════════════════════════════════════════════ */
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 60px;
+}
+.divider {
+  position: relative; z-index: 1;
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* Scroll-reveal utility */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════════ */
+.site-footer {
+  position: relative; z-index: 1;
+  background: var(--ink);
+  border-top: 1px solid var(--border);
+  padding: 64px 60px 0;
+}
+
+.site-footer__inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+
+/* Footer brand column */
+.footer-brand__tagline {
+  font-size: 13px; color: var(--steel);
+  line-height: 1.75; font-weight: 300;
+  margin-top: 16px; max-width: 300px;
+}
+.footer-brand__badges {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
+}
+.footer-brand__badge {
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px;
+  background: var(--glass); border: 1px solid var(--border); color: var(--steel);
+}
+
+/* Footer link columns */
+.footer-col__title {
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  margin-bottom: 20px;
+}
+.footer-col__links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.footer-col__links a {
+  text-decoration: none; font-size: 13px;
+  color: var(--steel); transition: color 0.2s;
+}
+.footer-col__links a:hover { color: var(--white); }
+
+/* Footer bottom bar */
+.site-footer__bottom {
+  max-width: 1200px; margin: 48px auto 0;
+  padding: 20px 0 32px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--steel); letter-spacing: 0.04em;
+}
+.footer-legal { display: flex; align-items: center; gap: 4px; }
+.footer-legal a {
+  font-size: 12px; color: var(--steel);
+  text-decoration: none; transition: color 0.2s;
+  padding: 0 12px;
+}
+.footer-legal a:hover { color: var(--gold); }
+.footer-legal span { color: var(--border); font-size: 10px; }
+
+/* ════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .site-nav     { padding: 0 24px; }
+  .nav-links    { display: none; }
+  .nav-hamburger{ display: flex; }
+  .section-inner{ padding: 80px 24px; }
+  .site-footer__inner { grid-template-columns: 1fr 1fr; }
+  .site-footer  { padding: 48px 24px 0; }
+}
+
+@media (max-width: 640px) {
+  .site-footer__inner { grid-template-columns: 1fr; }
+  .site-footer__bottom { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer-legal { flex-wrap: wrap; padding: 0; }
+  .footer-legal a { padding: 0 8px 0 0; }
+  .footer-legal span { display: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PAGE-SPECIFIC STYLES — add below this line in each child page
+   ════════════════════════════════════════════════════════════════ */
+</style>
+
+<!-- ── PAGE-SPECIFIC <style> goes here when copying this template ── -->
+
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     NAVIGATION
+     ════════════════════════════════════════════════════════════════ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+
+  <a href="index.html" class="nav-logo" aria-label="ESG Momentum Engine home">
+    <div class="nav-logo__mark" aria-hidden="true">E</div>
+    <span class="nav-logo__text">ESG <em>Momentum</em></span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <!--
+      Set class="active" on the link matching the current page.
+      e.g. on factors.html → <a href="factors.html" class="active">Factors</a>
+    -->
+    <li><a href="factors.html">Factors</a></li>
+    <li><a href="platform.html">Platform</a></li>
+    <li><a href="asean.html">ASEAN</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="partners.html">Partners</a></li>
+    <li><a href="contact.html" class="nav-cta">Request Demo</a></li>
+  </ul>
+
+  <!-- Mobile toggle -->
+  <button class="nav-hamburger" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <a href="factors.html">Factors</a>
+  <a href="platform.html">Platform</a>
+  <a href="asean.html">ASEAN</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="partners.html">Partners</a>
+  <a href="contact.html" class="nav-cta">Request Demo</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE WRAPPER
+     ════════════════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+
+  <!-- ============================================================
+       PAGE CONTENT — replace everything between these comments
+       ============================================================ -->
+
+
+
+  <!-- ============================================================
+       END PAGE CONTENT
+       ============================================================ -->
+
+</div><!-- /page-wrapper -->
+
+<!-- ════════════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+
+    <!-- Brand -->
+    <div>
+      <a href="index.html" class="nav-logo" aria-label="ESG Momentum Engine home">
+        <div class="nav-logo__mark" aria-hidden="true">E</div>
+        <span class="nav-logo__text">ESG <em>Momentum</em></span>
+      </a>
+      <p class="footer-brand__tagline">
+        Real-time predictive ESG intelligence for ASEAN capital markets.
+        Transforming how institutional investors see risk and opportunity.
+      </p>
+      <div class="footer-brand__badges">
+        <span class="footer-brand__badge">🇸🇬 Singapore</span>
+        <span class="footer-brand__badge">CGSI Partner</span>
+        <span class="footer-brand__badge">AI-Powered</span>
+      </div>
+    </div>
+
+    <!-- Platform -->
+    <div>
+      <div class="footer-col__title">Platform</div>
+      <ul class="footer-col__links">
+        <li><a href="platform.html">Dashboard</a></li>
+        <li><a href="platform.html#api">API Documentation</a></li>
+        <li><a href="platform.html#scores">ESG Scores</a></li>
+        <li><a href="platform.html#momentum">Momentum Tracker</a></li>
+        <li><a href="platform.html#geo">Geopolitical Feed</a></li>
+      </ul>
+    </div>
+
+    <!-- Company -->
+    <div>
+      <div class="footer-col__title">Company</div>
+      <ul class="footer-col__links">
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="methodology.html">Methodology</a></li>
+        <li><a href="partners.html">Partners</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="careers.html">Careers</a></li>
+      </ul>
+    </div>
+
+    <!-- Resources -->
+    <div>
+      <div class="footer-col__title">Resources</div>
+      <ul class="footer-col__links">
+        <li><a href="whitepaper.html">ESG Whitepaper</a></li>
+        <li><a href="asean-guide.html">ASEAN Market Guide</a></li>
+        <li><a href="cgsi.html">CGSI Framework</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <span class="footer-copy">© 2025 ESG Momentum Engine Pte. Ltd. · Singapore · UEN 202500000Z</span>
+    <nav class="footer-legal" aria-label="Legal links">
+      <a href="privacy.html">Privacy Policy</a>
+      <span aria-hidden="true">·</span>
+      <a href="terms.html">Terms of Service</a>
+      <span aria-hidden="true">·</span>
+      <a href="disclaimer.html">Disclaimer</a>
+    </nav>
+  </div>
+
+</footer>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SHARED SCRIPTS — runs on every page
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Scroll reveal ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 55);
+          ro.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -36px 0px' });
+    revealEls.forEach(el => ro.observe(el));
+  }
+
+  /* ── Mobile nav toggle ── */
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+  if (toggle && drawer) {
+    toggle.addEventListener('click', () => {
+      const open = drawer.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+      // Animate hamburger → X
+      const bars = toggle.querySelectorAll('span');
+      if (open) {
+        bars[0].style.cssText = 'transform:translateY(7px) rotate(45deg)';
+        bars[1].style.cssText = 'opacity:0';
+        bars[2].style.cssText = 'transform:translateY(-7px) rotate(-45deg)';
+      } else {
+        bars.forEach(b => b.style.cssText = '');
+      }
+    });
+    // Close drawer when a link is clicked
+    drawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.querySelectorAll('span').forEach(b => b.style.cssText = '');
+      });
+    });
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!toggle.contains(e.target) && !drawer.contains(e.target)) {
+        drawer.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.querySelectorAll('span').forEach(b => b.style.cssText = '');
+      }
+    });
+  }
+
+  /* ── Active nav link highlight (single-page anchor scroll) ── */
+  const sections  = document.querySelectorAll('section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a, .nav-drawer a');
+  if (sections.length) {
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 130) current = s.id;
+      });
+      navAnchors.forEach(a => {
+        const href = a.getAttribute('href') || '';
+        const isMatch = href === '#' + current || href.endsWith('#' + current);
+        a.classList.toggle('active', isMatch);
+      });
+    }, { passive: true });
+  }
+
+})();
+</script>
+
+<!-- PAGE-SPECIFIC <script> goes here when copying this template -->
+
+</body>
+</html>
