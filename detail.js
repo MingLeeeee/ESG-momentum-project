@@ -268,7 +268,7 @@ document.getElementById('bc-name').textContent = D.name;
 document.getElementById('co-avatar').textContent = D.ticker[0];
 document.getElementById('co-fullname').textContent = D.name;
 document.getElementById('co-ticker').textContent = D.ticker;
-document.getElementById('co-country').textContent = `${D.flag} ${D.country}`;
+document.getElementById('co-country').textContent = D.country;
 document.getElementById('co-sector').textContent = D.sector;
 document.getElementById('co-exchange').textContent = D.exchange;
 document.getElementById('co-updated').textContent = D.updated;
@@ -1126,6 +1126,97 @@ function getGeoDotCloud(exposures){
   });
 }
 
+function renderGeoShowcase(exposures, meta){
+  const nodeWrap=document.getElementById('geo-showcase-nodes');
+  if(!nodeWrap) return;
+
+  const positions={
+    TH:{left:28,top:31},
+    VN:{left:53,top:35},
+    PH:{left:86,top:45},
+    MY:{left:34,top:69},
+    SG:{left:44,top:73},
+    ID:{left:57,top:87}
+  };
+  const riskLabel=(risk)=>risk==='low'?'Low':risk==='med'?'Watch':'High';
+  const riskColor=(risk)=>risk==='low'?'var(--green)':risk==='med'?'var(--gold)':'var(--red)';
+  const highExposure=exposures.filter(e=>e.exposure==='High').length;
+  const watchNodes=exposures.filter(e=>e.risk!=='low').length;
+  const focus=exposures.find(e=>e.exposure==='High') || exposures[0];
+  const tooltip=document.getElementById('geo-showcase-tooltip');
+
+  const setFocus=(item)=>{
+    const focusName=document.getElementById('geo-showcase-focus-name');
+    const focusExposure=document.getElementById('geo-showcase-focus-exposure');
+    const focusRisk=document.getElementById('geo-showcase-focus-risk');
+    const focusReason=document.getElementById('geo-showcase-focus-reason');
+    if(focusName) focusName.textContent=`${item.code} - ${item.name}`;
+    if(focusExposure) focusExposure.textContent=item.exposure;
+    if(focusRisk){
+      focusRisk.textContent=riskLabel(item.risk);
+      focusRisk.style.color=riskColor(item.risk);
+    }
+    if(focusReason) focusReason.textContent=item.reason;
+  };
+  const showMapTip=(item,p)=>{
+    setFocus(item);
+    if(!tooltip) return;
+    const alignRight=p.left>70;
+    tooltip.classList.toggle('align-right',alignRight);
+    tooltip.style.left=`${alignRight?p.left-3:p.left+4}%`;
+    tooltip.style.top=`${Math.min(82,Math.max(18,p.top-3))}%`;
+    tooltip.innerHTML=`
+      <strong>${escapeAiText(item.code)} - ${escapeAiText(item.name)}</strong>
+      <span>Exposure: <b>${escapeAiText(item.exposure)}</b></span>
+      <span>Sensitivity: <b style="color:${riskColor(item.risk)}">${riskLabel(item.risk)}</b></span>
+      <p>${escapeAiText(item.reason)}</p>
+    `;
+    tooltip.classList.add('visible');
+  };
+  const hideMapTip=()=>{
+    if(tooltip) tooltip.classList.remove('visible');
+  };
+
+  document.getElementById('geo-showcase-title').textContent=`${D.name} exposure layer`;
+  document.getElementById('geo-showcase-score').textContent=D.geo;
+  document.getElementById('geo-showcase-score').style.color=meta.risk.color;
+  document.getElementById('geo-showcase-watch').textContent=watchNodes;
+  document.getElementById('geo-showcase-bars').innerHTML=[
+    {label:'High exposure',value:highExposure,total:exposures.length,color:'var(--green)'},
+    {label:'Watch nodes',value:watchNodes,total:exposures.length,color:'var(--gold)'},
+    {label:'Main driver',value:Math.max(1,Math.round(D.geo/20)),total:5,color:'var(--blue)',text:meta.mainDriver}
+  ].map(row=>{
+    const pct=Math.max(12,Math.round((row.value/row.total)*100));
+    return `<div class="geo-showcase-bar">
+      <div><span>${row.label}</span><b>${row.text?escapeAiText(row.text):row.value}</b></div>
+      <div class="geo-showcase-track"><i style="width:${pct}%;background:${row.color};box-shadow:0 0 14px ${row.color};"></i></div>
+    </div>`;
+  }).join('');
+
+  nodeWrap.innerHTML=exposures.map(item=>{
+    const p=positions[item.code] || {left:50,top:50};
+    const size=item.exposure==='High'?'lg':item.exposure==='Medium'?'md':'sm';
+    return `<button class="geo-dash-node ${item.risk} ${size}" type="button"
+      style="left:${p.left}%;top:${p.top}%"
+      data-code="${item.code}" title="${escapeAiText(item.name)}: ${escapeAiText(item.reason)}">
+      <span>${item.code}</span>
+      <i></i>
+    </button>`;
+  }).join('');
+
+  nodeWrap.querySelectorAll('.geo-dash-node').forEach(btn=>{
+    const item=exposures.find(e=>e.code===btn.dataset.code);
+    if(!item) return;
+    const p=positions[item.code] || {left:50,top:50};
+    btn.addEventListener('mouseenter',()=>showMapTip(item,p));
+    btn.addEventListener('focus',()=>showMapTip(item,p));
+    btn.addEventListener('click',()=>showMapTip(item,p));
+    btn.addEventListener('mouseleave',hideMapTip);
+    btn.addEventListener('blur',hideMapTip);
+  });
+  setFocus(focus);
+}
+
 function attachMapTooltip(){
   const wrap=document.querySelector('.real-map-wrap');
   const tip=document.getElementById('map-hover-tooltip');
@@ -1150,7 +1241,7 @@ function renderGeo(){
   const gv=document.getElementById('geo-val');
   gv.textContent=D.geo;
   gv.style.color=risk.color;
-  document.getElementById('geo-country-label').textContent=`${D.flag} ${D.country} · Geopolitical Risk Score`;
+  document.getElementById('geo-country-label').textContent=`${D.country} - Geopolitical Risk Score`;
   document.getElementById('geo-risk-level').textContent=risk.label;
   document.getElementById('geo-risk-level').style.color=risk.color;
   document.getElementById('geo-main-driver').textContent=getGeoMainDriver();
@@ -1181,6 +1272,8 @@ function renderGeo(){
       <b>${row.value}</b>
     </div>`;
   }).join('');
+
+  renderGeoShowcase(exposures,{risk,mainDriver,lowCount,watchCount,highRiskCount});
 
   document.getElementById('asean-link-lines').innerHTML='';
   document.getElementById('asean-map-markers').innerHTML=getGeoDotCloud(exposures).map((e,idx)=>{
@@ -1225,7 +1318,7 @@ function renderGeo(){
       <div class="geo-event-top">
         <div>
           <div class="geo-event-type">${e.type}</div>
-          <div class="geo-event-title">${e.icon||'🌏'} ${e.title}</div>
+          <div class="geo-event-title">${e.title}</div>
         </div>
         <span class="geo-badge rk-badge rk-${e.badgec||'amber'}">${e.badge||'WATCH'}</span>
       </div>
@@ -1345,6 +1438,367 @@ function buildGeneratedInsight(){
   return `${D.name} is currently assessed at ${D.esg}/100 with ${direction} ESG momentum. The simulated AI model reads overall risk as ${riskLevel}, using ESG score trend, financial health, management quality, reputation sentiment, and geopolitical exposure as inputs. Main watch factor: ${weakest.label} (${weakest.score}/100). Prototype confidence: ${confidence}%. Recommended next step: review the AI Prediction and Peer Compare tabs before making an investment decision.`;
 }
 
+function escapeAiText(value){
+  return String(value ?? '').replace(/[&<>"']/g,(char)=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[char]));
+}
+
+function getAiGrade(score){
+  if(score>=75) return 'Strong';
+  if(score>=65) return 'Moderate';
+  if(score>=55) return 'Watch';
+  return 'Weak';
+}
+
+function getAiScoreDrivers(){
+  return [
+    {label:'Environmental',score:D.env,note:'Planet impact, carbon transition and environmental policy signals.'},
+    {label:'Social',score:D.soc,note:'Employee welfare, customer trust and stakeholder treatment.'},
+    {label:'Governance',score:D.gov,note:'Board quality, leadership discipline and governance risk.'},
+    {label:'Financial Health',score:D.debt,note:'Debt resilience, balance-sheet strength and financial stability.'},
+    {label:'Management Quality',score:D.mgmt,note:'CEO/CFO reputation, leadership change risk and execution quality.'},
+    {label:'Reputation Sentiment',score:D.rep,note:'Media sentiment, allegations, controversies and public trust.'},
+    {label:'Geopolitical Exposure',score:D.geo,note:'ASEAN country exposure, trade route risk and policy sensitivity.'}
+  ].filter(item=>Number.isFinite(item.score));
+}
+
+function getAiSources(){
+  return [
+    'ESG component scores',
+    'Financial and debt metrics',
+    'Management profile',
+    'Reputation events',
+    'Geopolitical exposure',
+    'Peer benchmark data'
+  ];
+}
+
+function buildScoreExplanationHTML(){
+  const drivers=getAiScoreDrivers();
+  const topDrivers=[...drivers].sort((a,b)=>b.score-a.score).slice(0,3);
+  const watchDrivers=[...drivers].sort((a,b)=>a.score-b.score).slice(0,2);
+  const grade=getAiGrade(D.esg);
+  const momentumText=D.momentum>0?`improving by +${D.momentum}`:D.momentum<0?`declining by ${D.momentum}`:'stable';
+  const scoreColor=D.esg>=70?'var(--emerald)':D.esg>=60?'var(--gold)':'var(--crimson)';
+  const rows=(items)=>items.map(item=>`
+    <div class="score-driver-row">
+      <div><b>${escapeAiText(item.label)}</b><small>${escapeAiText(item.note)}</small></div>
+      <span style="color:${item.score>=70?'var(--emerald)':item.score>=60?'var(--gold)':'var(--crimson)'}">${item.score}</span>
+    </div>
+  `).join('');
+
+  return `
+    <div class="score-explain-hero">
+      <span>${escapeAiText(D.name)}</span>
+      <div class="score-explain-main">
+        <div class="score-explain-score" style="color:${scoreColor}">${D.esg}</div>
+        <div class="score-explain-grade">${escapeAiText(grade)}<br>${escapeAiText(momentumText)}</div>
+      </div>
+    </div>
+    <div class="score-explain-section">
+      <h4>AI Summary</h4>
+      <p>${escapeAiText(D.aiInsight || buildGeneratedInsight())}</p>
+    </div>
+    <div class="score-explain-section">
+      <h4>Strongest Drivers</h4>
+      <div class="score-driver-list">${rows(topDrivers)}</div>
+    </div>
+    <div class="score-explain-section">
+      <h4>Watch Areas</h4>
+      <div class="score-driver-list">${rows(watchDrivers)}</div>
+    </div>
+    <div class="score-explain-section">
+      <h4>Data Used</h4>
+      <div class="source-chip-list">${getAiSources().map(src=>`<span class="source-chip">${escapeAiText(src)}</span>`).join('')}</div>
+    </div>
+    <div class="prototype-note">Prototype note: this explanation is generated from static demo data. In the final system, the same explanation panel would be powered by live ESG data, alternative data, and AI model outputs.</div>
+  `;
+}
+
+function getMainScoreInfo(scoreKey){
+  const key=String(scoreKey||'esg').toLowerCase();
+  const info={
+    esg:{
+      label:'Overall ESG Score',
+      score:D.esg,
+      grade:getAiGrade(D.esg),
+      summary:D.aiInsight || buildGeneratedInsight(),
+      meaning:'Combines environmental, social, governance, momentum and external signal context into one decision-support score.',
+      checks:[
+        {label:'Environmental impact',score:D.env,note:'Climate, emissions, energy and environmental policy signals.'},
+        {label:'Social performance',score:D.soc,note:'Employee welfare, stakeholder treatment and public trust.'},
+        {label:'Governance quality',score:D.gov,note:'Board oversight, leadership discipline and governance event signals.'},
+        {label:'Momentum direction',score:D.momentum>0?75:55,note:'Whether the score trend is improving or weakening over time.'}
+      ],
+      investorMeaning:'The overall ESG score helps users understand the company quality today, while the AI prediction tab shows where it may move next.'
+    },
+    debt:{
+      label:'Debt Management Score',
+      score:D.debt,
+      grade:getAiGrade(D.debt),
+      summary:D.debtAi || 'AI checks whether the company can handle debt obligations and financial pressure.',
+      meaning:'Measures financial stability and how safely the company manages debt from an investor perspective.',
+      checks:[
+        {label:'Debt-to-equity level',score:D.debt,note:'How much borrowing the company uses relative to equity.'},
+        {label:'Interest coverage',score:Math.min(100,D.debt+3),note:'Whether earnings can comfortably cover interest payments.'},
+        {label:'Liquidity buffer',score:Math.min(100,D.debt+2),note:'Cash and capital strength available during stress periods.'},
+        {label:'Debt maturity pressure',score:Math.max(0,D.debt-4),note:'Whether upcoming repayments may create refinancing risk.'}
+      ],
+      investorMeaning:'A higher debt score suggests stronger financial resilience and lower chance that debt pressure harms future ESG or investment performance.'
+    },
+    moat:{
+      label:'Economic Moat Score',
+      score:D.moat,
+      grade:getAiGrade(D.moat),
+      summary:'AI checks whether the company has durable competitive advantages that can protect long-term performance.',
+      meaning:'Measures how defensible the business is against competitors using brand, switching cost, network effect and cost advantage signals.',
+      checks:(D.moatFactors||[]).map(item=>({label:item.label,score:item.score,note:item.desc})),
+      investorMeaning:'A higher moat score suggests the company may sustain profits and ESG investment capacity over the long term.'
+    },
+    leadership:{
+      label:'Leadership Score',
+      score:D.mgmt,
+      grade:getAiGrade(D.mgmt),
+      summary:D.mgmtAi || 'AI checks CEO/CFO reputation, leadership stability and board-related signals.',
+      meaning:'Measures whether leadership quality supports stable execution, transparent governance and long-term investor confidence.',
+      checks:[
+        {label:'CEO reputation',score:D.mgmt,note:D.ceo?.name ? `${D.ceo.name} profile and public leadership record.`:'CEO profile and public leadership record.'},
+        {label:'CFO / reporting quality',score:Math.min(100,D.mgmt+2),note:D.cfo?.name ? `${D.cfo.name} reporting and capital management signals.`:'CFO reporting and capital management signals.'},
+        {label:'Leadership continuity',score:Math.min(100,D.mgmt+1),note:'Tenure, recent changes and succession stability.'},
+        {label:'Board governance support',score:D.gov,note:'Whether board oversight strengthens management accountability.'}
+      ],
+      investorMeaning:'A higher leadership score suggests stronger execution quality and lower chance of management-related disruption.'
+    }
+  };
+  return info[key] || info.esg;
+}
+
+function buildMainScoreExplanationHTML(scoreKey){
+  const item=getMainScoreInfo(scoreKey);
+  const scoreColor=item.score>=70?'var(--emerald)':item.score>=60?'var(--gold)':'var(--crimson)';
+  const checks=(item.checks&&item.checks.length?item.checks:[]).map(check=>`
+    <div class="score-driver-row">
+      <div><b>${escapeAiText(check.label)}</b><small>${escapeAiText(check.note)}</small></div>
+      <span style="color:${check.score>=70?'var(--emerald)':check.score>=60?'var(--gold)':'var(--crimson)'}">${check.score}</span>
+    </div>
+  `).join('');
+
+  return `
+    <div class="score-explain-hero">
+      <span>${escapeAiText(item.label)}</span>
+      <div class="score-explain-main">
+        <div class="score-explain-score" style="color:${scoreColor}">${item.score}</div>
+        <div class="score-explain-grade">${escapeAiText(item.grade)}<br>AI explained</div>
+      </div>
+    </div>
+    <div class="score-explain-section">
+      <h4>What This Score Is About</h4>
+      <p>${escapeAiText(item.meaning)}</p>
+    </div>
+    <div class="score-explain-section">
+      <h4>Current AI Reading</h4>
+      <p>${escapeAiText(item.summary)}</p>
+    </div>
+    <div class="score-explain-section">
+      <h4>Signals Checked</h4>
+      <div class="score-driver-list">${checks}</div>
+    </div>
+    <div class="score-explain-section">
+      <h4>Investor Meaning</h4>
+      <p>${escapeAiText(item.investorMeaning)}</p>
+    </div>
+    <div class="prototype-note">Prototype note: this popup explains the score using demo data. In the final system, every signal would be linked to source data and AI model evidence.</div>
+  `;
+}
+
+function getComponentInfo(componentKey){
+  const key=String(componentKey||'').toLowerCase();
+  const info={
+    environmental:{
+      label:'Environmental',
+      short:'Measures how the company affects the planet.',
+      score:D.env,
+      weight:35,
+      checks:['Carbon emissions and reduction plans','Energy usage and renewable transition','Climate targets and green finance activity','Waste, water and environmental compliance'],
+      investorMeaning:'A higher environmental score suggests the company is better prepared for climate rules, carbon costs and sustainability expectations.'
+    },
+    social:{
+      label:'Social',
+      short:'Measures how the company treats people and stakeholders.',
+      score:D.soc,
+      weight:30,
+      checks:['Employee welfare and labour practices','Customer trust and product responsibility','Community impact and inclusion policies','Media sentiment related to people and stakeholders'],
+      investorMeaning:'A higher social score suggests stronger stakeholder trust and lower chance of people-related controversies affecting future performance.'
+    },
+    governance:{
+      label:'Governance',
+      short:'Measures how the company is run and controlled.',
+      score:D.gov,
+      weight:35,
+      checks:['Board independence and oversight','Leadership stability and CEO/CFO signals','Disclosure quality and compliance history','Fraud, controversy and investigation signals'],
+      investorMeaning:'A higher governance score suggests stronger leadership discipline and more reliable decision-making, which investors usually value for long-term confidence.'
+    }
+  };
+  return info[key] || info.environmental;
+}
+
+function buildComponentExplanationHTML(componentKey){
+  const item=getComponentInfo(componentKey);
+  const scoreColor=item.score>=70?'var(--emerald)':item.score>=60?'var(--gold)':'var(--crimson)';
+  return `
+    <div class="score-explain-hero">
+      <span>${escapeAiText(item.label)} Score</span>
+      <div class="score-explain-main">
+        <div class="score-explain-score" style="color:${scoreColor}">${item.score}</div>
+        <div class="score-explain-grade">Weight ${item.weight}%<br>${escapeAiText(getAiGrade(item.score))}</div>
+      </div>
+    </div>
+    <div class="score-explain-section">
+      <h4>What This Score Is About</h4>
+      <p>${escapeAiText(item.short)}</p>
+    </div>
+    <div class="score-explain-section">
+      <h4>Current AI Reading</h4>
+      <p>${escapeAiText(componentExplanation(item.label, item.score))}</p>
+    </div>
+    <div class="score-explain-section">
+      <h4>Signals Checked</h4>
+      <div class="score-driver-list">
+        ${item.checks.map(check=>`
+          <div class="score-driver-row">
+            <div><b>${escapeAiText(check)}</b><small>Used to explain the ${escapeAiText(item.label.toLowerCase())} component score.</small></div>
+            <span style="color:var(--gold)">Input</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="score-explain-section">
+      <h4>Investor Meaning</h4>
+      <p>${escapeAiText(item.investorMeaning)}</p>
+    </div>
+    <div class="prototype-note">Prototype note: this popup explains the scoring logic using demo data. In the final system, each signal would be linked to live data sources and model evidence.</div>
+  `;
+}
+
+function initWhyScorePanel(){
+  const panel=document.getElementById('scoreExplainPanel');
+  const content=document.getElementById('scoreExplainContent');
+  const closeBtn=document.getElementById('closeScoreExplain');
+  const title=document.getElementById('scoreExplainTitle');
+  if(!panel||!content) return;
+
+  const openPanel=(kind,key)=>{
+    if(kind==='main'){
+      const info=getMainScoreInfo(key);
+      if(title) title.textContent=info.label;
+      content.innerHTML=buildMainScoreExplanationHTML(key);
+      panel.hidden=false;
+      return;
+    }
+    if(kind==='component'){
+      const info=getComponentInfo(key);
+      if(title) title.textContent=`${info.label} Score`;
+      content.innerHTML=buildComponentExplanationHTML(key);
+      panel.hidden=false;
+      return;
+    }
+    if(title) title.textContent='Score Explanation';
+    content.innerHTML=buildScoreExplanationHTML();
+    panel.hidden=false;
+  };
+  const closePanel=()=>{panel.hidden=true;};
+
+  document.querySelectorAll('[data-score-panel]').forEach(btn=>btn.addEventListener('click',()=>openPanel()));
+  document.querySelectorAll('[data-main-score]').forEach(btn=>btn.addEventListener('click',()=>openPanel('main',btn.dataset.mainScore)));
+  document.querySelectorAll('[data-component-score]').forEach(btn=>btn.addEventListener('click',()=>openPanel('component',btn.dataset.componentScore)));
+  if(closeBtn) closeBtn.addEventListener('click',closePanel);
+  panel.addEventListener('click',(event)=>{if(event.target===panel) closePanel();});
+  document.addEventListener('keydown',(event)=>{if(event.key==='Escape'&&!panel.hidden) closePanel();});
+}
+
+function getPeerAverageForChat(){
+  const peers=Array.isArray(D.peers)?D.peers:[];
+  if(!peers.length) return null;
+  return peers.reduce((sum,p)=>sum+p.esg,0)/peers.length;
+}
+
+function buildChatbotResponse(question){
+  const q=question.toLowerCase();
+  const drivers=getAiScoreDrivers();
+  const weakest=[...drivers].sort((a,b)=>a.score-b.score)[0];
+  const strongest=[...drivers].sort((a,b)=>b.score-a.score)[0];
+  const peerAvg=getPeerAverageForChat();
+  const projectedScore=Math.max(0,Math.min(100,Math.round((D.esg + (D.momentum>0?D.momentum*1.4:D.momentum*.9))*10)/10));
+
+  if(q.includes('source')||q.includes('data')){
+    return `For this prototype, I use six source categories: ${getAiSources().join(', ')}. The data is simulated, but the structure shows what the final system would connect to: ESG datasets, annual reports, company announcements, news signals, reputation events, geopolitical indicators, and peer benchmarks.`;
+  }
+  if(q.includes('improve')||q.includes('opportunity')||q.includes('upside')){
+    return `${D.name}'s strongest future upside signal is ${strongest.label} at ${strongest.score}/100. If this factor continues improving and weaker areas do not deteriorate, the ESG score could move toward ${projectedScore}/100 over the next forecast period. Use this as decision support, not an automatic buy/sell answer.`;
+  }
+  if(q.includes('monitor')||q.includes('decide')||q.includes('deciding')||q.includes('watch')){
+    return `Before deciding, monitor ${weakest.label} (${weakest.score}/100), ESG momentum (${D.momentum>0?'+':''}${D.momentum}), and whether new company events support or weaken the 90-day outlook. The goal is to judge whether the future score direction remains credible.`;
+  }
+  if(q.includes('peer')||q.includes('compare')){
+    if(peerAvg===null) return `${D.name} has no peer set loaded yet. In the final version, this answer would compare the company against its sector and ASEAN benchmark.`;
+    const gap=D.esg-peerAvg;
+    return `${D.name} scores ${D.esg}, while the loaded peer average is ${peerAvg.toFixed(1)}. That is ${gap>=0?'above':'below'} peers by ${Math.abs(gap).toFixed(1)} points. Peer context helps users judge whether the future outlook is stronger or weaker than similar companies.`;
+  }
+  if(q.includes('predict')||q.includes('future')||q.includes('forecast')||q.includes('outlook')||q.includes('90')){
+    return `The simulated 90-day outlook projects ${D.name}'s ESG score moving from ${D.esg} to about ${projectedScore}. This is based on current momentum, component scores, management/reputation signals, geopolitical exposure, and peer context. ${D.predAi || ''}`.trim();
+  }
+  if(q.includes('score')||q.includes('why')||q.includes('explain')){
+    return `${D.name} has an ESG score of ${D.esg}/100, graded ${getAiGrade(D.esg)}. The strongest current factor is ${strongest.label} (${strongest.score}), while the main factor to monitor for future movement is ${weakest.label} (${weakest.score}). AI summary: ${D.aiInsight || buildGeneratedInsight()}`;
+  }
+  return `${D.name} is currently scored ${D.esg}/100 with ${D.momentum>0?'positive':'mixed'} momentum. Ask about "90-day outlook", "future upside", "monitor before deciding", "compare peers", or "data sources" for a clearer answer.`;
+}
+
+function appendChatMessage(role, text){
+  const log=document.getElementById('ai-chat-log');
+  if(!log) return null;
+  const msg=document.createElement('div');
+  msg.className=`chat-msg ${role}`;
+  const label=document.createElement('div');
+  label.className='chat-role';
+  label.textContent=role==='user'?'You':'AI Assistant';
+  const body=document.createElement('p');
+  body.textContent=text;
+  msg.append(label,body);
+  log.appendChild(msg);
+  log.scrollTop=log.scrollHeight;
+  return body;
+}
+
+function initAiChatbot(){
+  const input=document.getElementById('ai-chat-input');
+  const send=document.getElementById('ai-chat-send');
+  if(!input||!send) return;
+
+  const ask=(preset)=>{
+    const question=(preset||input.value).trim();
+    if(!question) return;
+    appendChatMessage('user',question);
+    input.value='';
+    send.disabled=true;
+    send.textContent='Thinking';
+    const typing=appendChatMessage('bot','Reading score momentum, forecast signals, peer context, and source notes...');
+    setTimeout(()=>{
+      if(typing) typing.textContent=buildChatbotResponse(question);
+      send.disabled=false;
+      send.textContent='Ask AI';
+    },900);
+  };
+
+  send.addEventListener('click',()=>ask());
+  input.addEventListener('keydown',(event)=>{if(event.key==='Enter') ask();});
+  document.querySelectorAll('[data-question]').forEach(btn=>btn.addEventListener('click',()=>ask(btn.dataset.question)));
+}
+
 function initPrototypeControls(){
   const watchBtn=document.getElementById('watchlistBtn');
   if(watchBtn){
@@ -1405,3 +1859,5 @@ function initPrototypeControls(){
 }
 
 initPrototypeControls();
+initWhyScorePanel();
+initAiChatbot();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESG Momentum Engine — Company Detail</title>
+<title>ESG Momentum Engine - Company Detail</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
   <ul class="nav-links" role="list">
     <li><a href="app.html">Home</a></li>
     <li><a href="app.html#factors">Factors</a></li>
-    <li><a href="app.html#command-centre">Command Centre</a></li>
     <li><a href="companies.html" class="active">Companies</a></li>
     <li><a href="app.html#asean">ASEAN</a></li>
     <li><a href="app.html#pricing">Pricing</a></li>
@@ -32,7 +31,6 @@
 <div class="nav-drawer" id="navDrawer" role="dialog" aria-modal="true" aria-label="Mobile navigation">
   <a href="app.html">Home</a>
   <a href="app.html#factors">Factors</a>
-  <a href="app.html#command-centre">Command Centre</a>
   <a href="companies.html" class="active">Companies</a>
   <a href="app.html#asean">ASEAN</a>
   <a href="app.html#pricing">Pricing</a>
@@ -44,10 +42,10 @@
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
   <a href="app.html">Home</a>
-  <span>›</span>
+  <span>&gt;</span>
   <a href="companies.html">Companies</a>
-  <span>›</span>
-  <span id="bc-name">Loading…</span>
+  <span>&gt;</span>
+  <span id="bc-name">Loading...</span>
 </div>
 
 <!-- COMPANY HEADER -->
@@ -57,7 +55,7 @@
       <div class="co-left">
         <div class="co-avatar" id="co-avatar">D</div>
         <div class="co-name-wrap">
-          <div class="co-full-name" id="co-fullname">Loading…</div>
+          <div class="co-full-name" id="co-fullname">Loading...</div>
           <div class="co-meta">
             <span class="co-ticker-badge" id="co-ticker">—</span>
             <span class="co-meta-item" id="co-country">—</span>
@@ -90,9 +88,10 @@
       <div class="co-tab" onclick="showPanel('financial',this)">Financial & Debt</div>
       <div class="co-tab" onclick="showPanel('management',this)">Management</div>
       <div class="co-tab" onclick="showPanel('reputation',this)">Reputation</div>
-      <div class="co-tab" onclick="showPanel('predictions',this)">AI Predictions</div>
       <div class="co-tab" onclick="showPanel('geopolitical',this)">Geopolitical</div>
       <div class="co-tab" onclick="showPanel('peers',this)">Peer Compare</div>
+      <div class="co-tab" onclick="showPanel('predictions',this)">AI Predictions</div>
+      <div class="co-tab" onclick="showPanel('chatbot',this)">AI Chatbot</div>
     </div>
   </div>
 </div>
@@ -174,7 +173,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">AI Explanation - Why This Score</div>
+        <div class="card-title">AI Explanation - Overall ESG Score</div>
         <div class="ai-insight" id="ai-insight">
           <div class="ai-icon">AI Explanation</div>
           <div class="ai-text">Loading analysis…</div>
@@ -268,6 +267,7 @@
               <div class="esg-score-grade" id="esg-score-grade">-</div>
               <div class="esg-score-momentum" id="esg-score-momentum">-</div>
               <div class="esg-score-confidence" id="esg-score-confidence">AI confidence loading</div>
+              <button class="why-score-btn" type="button" data-main-score="esg">Why this score?</button>
             </div>
           </div>
           <div class="esg-trend-strip" id="esg-trend-mini"><!-- JS fills --></div>
@@ -290,7 +290,7 @@
 
       <div class="two-col esg-intelligence-grid">
         <div class="card">
-          <div class="card-title">AI Score Logic <span class="card-title-right">why this score</span></div>
+          <div class="card-title">AI Score Logic <span class="card-title-right">component logic</span></div>
           <div class="esg-reason-list" id="esg-ai-reason-list"><!-- JS fills --></div>
         </div>
         <div class="card">
@@ -323,6 +323,7 @@
               <div class="premium-big-score" id="debt-val">-</div>
               <div class="premium-score-label">Debt Management Score / 100</div>
               <div class="premium-score-note">Annual report debt strength and balance-sheet resilience</div>
+              <button class="why-score-btn" type="button" data-main-score="debt">Why this score?</button>
             </div>
             <div class="debt-risk-scale">
               <div class="debt-risk-track">
@@ -355,6 +356,7 @@
               <div class="premium-big-score" id="moat-val">-</div>
               <div class="premium-score-label">Moat Score / 100</div>
               <div class="premium-rating-pill" id="moat-label">-</div>
+              <button class="why-score-btn" type="button" data-main-score="moat">Why this score?</button>
             </div>
             <div class="premium-mini-copy">
               AI checks brand strength, switching cost, network effect and cost advantage to see whether the company can defend long-term returns.
@@ -403,6 +405,9 @@
         <div class="card">
           <div class="card-title">Leadership Score</div>
           <div class="factor-bars premium-factor-bars" id="mgmt-bars"><!-- JS fills --></div>
+          <div class="score-action-row">
+            <button class="why-score-btn" type="button" data-main-score="leadership">Why this score?</button>
+          </div>
           <div class="ai-insight" style="margin-top:1rem;" id="mgmt-ai">
             <div class="ai-icon">AI Management Assessment</div>
             <div class="ai-text" id="mgmt-ai-text">-</div>
@@ -566,6 +571,91 @@
           <span class="card-title-right">6-country exposure layer</span>
         </div>
         <div class="asean-map-wrap map-3d-wrap real-map-wrap">
+          <div class="geo-showcase" aria-label="ASEAN geopolitical exposure dashboard">
+            <div class="geo-showcase-top">
+              <div>
+                <span>ASEAN Exposure Intelligence</span>
+                <b id="geo-showcase-title">Regional watch layer</b>
+              </div>
+              <div class="geo-showcase-live">Live Signals</div>
+            </div>
+            <div class="geo-showcase-body">
+              <div class="geo-showcase-side" hidden aria-hidden="true">
+                <div class="geo-showcase-metric">
+                  <span>Risk Score</span>
+                  <b id="geo-showcase-score">-</b>
+                </div>
+                <div class="geo-showcase-metric">
+                  <span>Watch Nodes</span>
+                  <b id="geo-showcase-watch">-</b>
+                </div>
+                <div class="geo-showcase-bars" id="geo-showcase-bars"></div>
+              </div>
+              <div class="geo-network-stage">
+                <svg class="geo-asean-silhouette" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="geoLandGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="rgba(74,135,184,.72)"/>
+                      <stop offset=".52" stop-color="rgba(30,83,128,.55)"/>
+                      <stop offset="1" stop-color="rgba(12,44,84,.46)"/>
+                    </linearGradient>
+                    <filter id="geoLandGlow" x="-35%" y="-35%" width="170%" height="170%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="1.2" flood-color="#5ab0e8" flood-opacity=".35"/>
+                      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000814" flood-opacity=".55"/>
+                    </filter>
+                  </defs>
+                  <g class="geo-land-layer" filter="url(#geoLandGlow)">
+                    <path class="geo-land" d="M24 14 C32 9 42 12 46 20 C43 27 42 33 47 41 C51 48 45 57 37 61 C31 64 29 70 33 78 C23 73 18 63 20 52 C21 43 14 38 14 29 C14 22 18 17 24 14Z"/>
+                    <path class="geo-land" d="M46 15 C57 23 61 36 58 48 C55 61 47 69 52 80 C43 76 39 66 43 55 C48 43 51 34 46 15Z"/>
+                    <path class="geo-land" d="M29 59 C37 61 42 67 44 76 C36 77 29 71 26 63 C25 60 26 58 29 59Z"/>
+                    <path class="geo-land" d="M48 62 C61 55 75 58 85 67 C74 76 59 77 48 69 C44 66 44 64 48 62Z"/>
+                    <path class="geo-land" d="M22 76 C34 73 44 78 50 87 C38 92 27 86 22 76Z"/>
+                    <path class="geo-land" d="M43 90 C59 87 76 90 94 96 C75 101 58 98 43 90Z"/>
+                    <path class="geo-land" d="M77 20 C85 24 89 31 88 40 C80 38 75 30 77 20Z"/>
+                    <path class="geo-land" d="M87 34 C95 39 99 47 97 56 C89 53 84 43 87 34Z"/>
+                    <path class="geo-land" d="M78 55 C85 58 89 65 87 73 C79 70 75 62 78 55Z"/>
+                    <circle class="geo-land island" cx="81" cy="50" r="2.2"/>
+                    <circle class="geo-land island" cx="89" cy="52" r="1.8"/>
+                    <circle class="geo-land island" cx="44" cy="69" r="1.4"/>
+                  </g>
+                  <g class="geo-country-label-layer">
+                    <text x="28" y="31">TH</text>
+                    <text x="53" y="35">VN</text>
+                    <text x="34" y="69">MY</text>
+                    <text x="44" y="73">SG</text>
+                    <text x="57" y="87">ID</text>
+                    <text x="86" y="45">PH</text>
+                  </g>
+                </svg>
+                <div class="geo-network-grid"></div>
+                <svg class="geo-network-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="geo-link main" d="M44 73 C38 62 32 47 28 31"/>
+                  <path class="geo-link main" d="M44 73 C50 62 53 49 53 35"/>
+                  <path class="geo-link main" d="M44 73 C58 62 70 52 86 45"/>
+                  <path class="geo-link muted" d="M44 73 C48 82 53 86 57 87"/>
+                  <path class="geo-link muted" d="M44 73 C40 72 37 70 34 69"/>
+                </svg>
+                <div class="geo-route-pulse"></div>
+                <div class="geo-route-caption">Hover pins for country exposure</div>
+                <div class="geo-map-legend-inline">
+                  <span><i class="legend-dot low"></i> Low</span>
+                  <span><i class="legend-dot med"></i> Watch</span>
+                  <span><i class="legend-dot high"></i> High</span>
+                </div>
+                <div id="geo-showcase-nodes" class="geo-showcase-nodes"></div>
+                <div id="geo-showcase-tooltip" class="geo-showcase-tooltip" role="status" aria-live="polite"></div>
+              </div>
+              <div class="geo-showcase-focus" hidden aria-hidden="true">
+                <span>Focus Node</span>
+                <b id="geo-showcase-focus-name">-</b>
+                <div class="geo-focus-grid">
+                  <small>Exposure</small><strong id="geo-showcase-focus-exposure">-</strong>
+                  <small>Risk</small><strong id="geo-showcase-focus-risk">-</strong>
+                </div>
+                <p id="geo-showcase-focus-reason">-</p>
+              </div>
+            </div>
+          </div>
           <div class="map-hud-line"></div>
           <div class="geo-map-panel geo-map-panel-left">
             <div class="geo-map-panel-title">Portfolio Exposure</div>
@@ -842,6 +932,44 @@
     </div>
   </div>
 
+  <!-- AI CHATBOT PANEL -->
+  <div class="tab-panel" id="panel-chatbot">
+    <div class="ai-chat-layout">
+      <div class="card ai-chat-card">
+        <div class="card-title">AI Chatbot <span class="card-title-right">prototype assistant</span></div>
+        <div class="ai-chat-log" id="ai-chat-log" aria-live="polite">
+          <div class="chat-msg bot">
+            <div class="chat-role">AI Assistant</div>
+            <p>Ask about this company's future ESG outlook, expected score movement, opportunity signals, what to monitor before deciding, or data sources. This prototype uses simulated company data.</p>
+          </div>
+        </div>
+        <div class="ai-chat-suggestions" id="ai-chat-suggestions">
+          <button type="button" data-question="What is the 90-day ESG outlook?">90-day outlook</button>
+          <button type="button" data-question="Which factors may improve next?">Future upside</button>
+          <button type="button" data-question="What should I monitor before deciding?">Monitor before deciding</button>
+          <button type="button" data-question="Where does the data come from?">Data sources</button>
+        </div>
+        <div class="ai-chat-input-row">
+          <input id="ai-chat-input" type="text" placeholder="Ask the AI assistant about this company">
+          <button class="prototype-btn prototype-btn-primary" id="ai-chat-send" type="button">Ask AI</button>
+        </div>
+      </div>
+
+      <div class="card data-source-card">
+        <div class="card-title">Data Used By AI <span class="card-title-right">for trust and explanation</span></div>
+        <div class="data-source-list">
+          <div class="data-source-item"><b>ESG Component Scores</b><span>Environment, Social, and Governance sub-scores used to explain the overall score.</span></div>
+          <div class="data-source-item"><b>Financial & Debt Metrics</b><span>Debt score, balance-sheet indicators, annual report metrics, and financial stability signals.</span></div>
+          <div class="data-source-item"><b>Management Signals</b><span>CEO/CFO profile, leadership change history, board quality, and governance strength indicators.</span></div>
+          <div class="data-source-item"><b>Reputation Events</b><span>Controversies, sentiment breakdown, allegation monitor, and ESG event timeline.</span></div>
+          <div class="data-source-item"><b>Geopolitical Exposure</b><span>ASEAN country exposure, regional events, trade routes, regulation, and country risk context.</span></div>
+          <div class="data-source-item"><b>Peer Benchmarks</b><span>Sector peer comparison and multi-factor peer matrix used to judge relative strength.</span></div>
+        </div>
+        <div class="prototype-note">Prototype note: the current version uses dummy/static data to demonstrate the workflow. A final system would connect these source categories to databases and live APIs.</div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /content-area -->
 </div>
 
@@ -855,7 +983,7 @@
       <p class="footer-brand__tagline">Real-time predictive ESG intelligence for ASEAN capital markets. Transforming how institutional investors see risk and opportunity.</p>
       <div class="footer-brand__badges"><span class="footer-brand__badge">🇸🇬 Singapore</span><span class="footer-brand__badge">CGSI Partner</span><span class="footer-brand__badge">AI-Powered</span></div>
     </div>
-    <div><div class="footer-col__title">Platform</div><ul class="footer-col__links"><li><a href="app.html#command-centre">Command Centre</a></li><li><a href="companies.html">Company Directory</a></li><li><a href="app.html#factors">ESG Framework</a></li><li><a href="app.html#value">Momentum Tracker</a></li><li><a href="app.html#asean">Geopolitical Feed</a></li></ul></div>
+    <div><div class="footer-col__title">Platform</div><ul class="footer-col__links"><li><a href="companies.html">Company Directory</a></li><li><a href="app.html#factors">ESG Framework</a></li><li><a href="app.html#value">Momentum Tracker</a></li><li><a href="app.html#asean">Geopolitical Feed</a></li><li><a href="detail.html?ticker=DBS">Company Dashboard</a></li></ul></div>
     <div><div class="footer-col__title">Company</div><ul class="footer-col__links"><li><a href="about.html">About Us</a></li><li><a href="methodology.html">Methodology</a></li><li><a href="app.html#partners">Partners</a></li><li><a href="research.html">Research</a></li><li><a href="careers.html">Careers</a></li></ul></div>
     <div><div class="footer-col__title">Resources</div><ul class="footer-col__links"><li><a href="whitepaper.html">ESG Whitepaper</a></li><li><a href="asean-guide.html">ASEAN Market Guide</a></li><li><a href="cgsi.html">CGSI Framework</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div>
   </div>
@@ -866,6 +994,19 @@
 </footer>
 
 <div class="prototype-toast" id="prototypeToast" role="status" aria-live="polite"></div>
+
+<div class="ai-sidepanel-backdrop" id="scoreExplainPanel" hidden>
+  <aside class="ai-sidepanel" role="dialog" aria-modal="true" aria-labelledby="scoreExplainTitle">
+    <div class="ai-sidepanel-head">
+      <div>
+        <div class="ai-sidepanel-label">AI Explanation</div>
+        <h3 id="scoreExplainTitle">Score Explanation</h3>
+      </div>
+      <button class="prototype-modal-close" id="closeScoreExplain" type="button" aria-label="Close score explanation">Close</button>
+    </div>
+    <div id="scoreExplainContent" class="score-explain-content"></div>
+  </aside>
+</div>
 
 <div class="prototype-modal-backdrop" id="alertModal" hidden>
   <div class="prototype-modal" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
