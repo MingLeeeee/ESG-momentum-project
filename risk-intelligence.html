@@ -3,323 +3,331 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESG Risk Intelligence - ESG Momentum Engine 2.0</title>
+<title>ESG Risk Intelligence — ESG Momentum Engine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/overall.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
+/* ── Local tokens ─────────────────────────────────────── */
 :root {
-  --amber: #f0a020;
-  --amber-border: rgba(240,160,32,0.4);
-  --blue: #5ab0e8;
-  --text2: var(--white-2);
-  --text3: var(--steel);
-  --red-border: rgba(232,64,64,0.35);
-  --green-border: rgba(0,200,150,0.35);
-  --fb-track-bg: rgba(255,255,255,0.06);
+  --amber:#f0a020; --amber-border:rgba(240,160,32,.4);
+  --blue:#5ab0e8;
+  --red-border:rgba(232,64,64,.35);
+  --green-border:rgba(0,200,150,.35);
+  --fb-bg:rgba(255,255,255,.06);
 }
 
-/* ── Hero ─────────────────────────────────────────────── */
-.risk-page { padding-bottom: 0; }
-.risk-hero {
-  border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(circle at 12% 0%, rgba(201,168,76,0.12), transparent 32%),
-    linear-gradient(135deg, rgba(30,42,58,0.92), rgba(10,14,26,0.96));
-}
-.risk-hero__inner { max-width:1200px; margin:0 auto; padding:72px 60px 0; }
-.risk-breadcrumb {
-  display:flex; align-items:center; gap:10px; margin-bottom:28px;
-  font-family:var(--font-mono); font-size:11px; color:var(--steel);
-  letter-spacing:0.08em; text-transform:uppercase;
-}
-.risk-breadcrumb a { color:var(--steel); text-decoration:none; }
-.risk-breadcrumb a:hover { color:var(--gold); }
-.risk-hero__grid { display:grid; grid-template-columns:1.35fr 0.65fr; gap:40px; align-items:end; padding-bottom:44px; }
-.risk-kicker {
-  display:inline-flex; align-items:center; gap:8px; margin-bottom:16px;
-  padding:6px 14px; border:1px solid var(--border-gold); border-radius:999px;
-  background:var(--gold-dim); font-family:var(--font-mono); font-size:11px;
-  color:var(--gold); letter-spacing:0.1em; text-transform:uppercase;
-}
-.risk-kicker::before {
-  content:""; width:6px; height:6px; border-radius:50%;
-  background:var(--emerald); box-shadow:0 0 16px rgba(0,200,150,0.75);
-}
-.risk-title {
-  max-width:760px; margin:0; font-family:var(--font-display);
-  font-size:clamp(38px,5vw,66px); line-height:1.04; font-weight:900;
-}
-.risk-title span { color:var(--gold); }
-.risk-copy { max-width:680px; margin-top:18px; color:var(--steel); font-size:16px; line-height:1.75; }
-.risk-hero__stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.risk-stat { border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,0.045); padding:18px; }
-.risk-stat strong { display:block; font-family:var(--font-display); font-size:28px; color:var(--gold); line-height:1; }
-.risk-stat span { display:block; margin-top:8px; font-family:var(--font-mono); font-size:10px; color:var(--steel); text-transform:uppercase; letter-spacing:0.09em; }
-
-/* ── Company switcher toolbar ─────────────────────────── */
-.risk-toolbar {
-  display:flex; justify-content:space-between; align-items:center;
-  gap:20px; padding:18px 60px; border-bottom:1px solid var(--border);
-  background:rgba(10,14,26,0.85); position:sticky; top:64px; z-index:50;
-  backdrop-filter:blur(12px);
-}
-.risk-toolbar__label { font-family:var(--font-mono); font-size:11px; color:var(--steel); letter-spacing:0.1em; text-transform:uppercase; }
-.risk-company-switcher { display:flex; flex-wrap:wrap; gap:8px; }
-.ri-company-btn {
-  min-height:34px; border:1px solid var(--border); border-radius:6px;
-  background:var(--glass); color:var(--steel); padding:7px 14px;
-  font-family:var(--font-mono); font-size:11px; font-weight:600;
-  letter-spacing:0.07em; text-transform:uppercase; cursor:pointer;
-  transition:border-color .2s, color .2s, background .2s;
-}
-.ri-company-btn:hover { border-color:var(--border-gold); color:var(--white); }
-.ri-company-btn.active { background:var(--gold); border-color:var(--gold); color:var(--ink); }
-
-/* ── Sub-navigation tab bar (mirrors detail.html .co-tabs) */
-.ri-subnav {
-  display:flex; gap:0; padding:0 60px;
-  background:rgba(10,14,26,0.92); border-bottom:1px solid var(--border);
-  position:sticky; top:117px; z-index:49;
-  backdrop-filter:blur(12px); overflow-x:auto;
-}
-.ri-subnav::-webkit-scrollbar { display:none; }
-.ri-tab {
-  padding:.7rem 1.4rem; font-size:.7rem; font-weight:500; letter-spacing:.08em;
-  text-transform:uppercase; color:rgba(255,255,255,.35); cursor:pointer;
-  border-bottom:2px solid transparent; transition:all .15s; white-space:nowrap;
-  font-family:var(--font-mono); background:none; border-top:none;
-  border-left:none; border-right:none;
-}
-.ri-tab:hover { color:rgba(255,255,255,.7); }
-.ri-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
-
-/* ── Main content area ────────────────────────────────── */
-.risk-section { max-width:1200px; margin:0 auto; padding:46px 60px 92px; }
-.tab-panel { display:none; }
-.tab-panel.active { display:block; }
-
-/* ── Shared card / grid helpers ───────────────────────── */
-.two-col { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:1.2rem; }
-.three-col { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.2rem; }
-.card {
-  background:linear-gradient(145deg,rgba(17,24,39,0.96),rgba(10,14,26,0.96));
-  border:1px solid var(--border); border-radius:16px; padding:1.35rem;
-  box-shadow:0 24px 70px rgba(0,0,0,0.28);
-}
-.card-title {
-  display:flex; justify-content:space-between; align-items:flex-start;
-  flex-wrap:wrap; gap:12px; margin-bottom:1rem;
-  font-family:var(--font-mono); font-size:.7rem; color:#9dc7ff;
-  letter-spacing:.12em; text-transform:uppercase;
-}
-.card-title-right { color:var(--steel); font-size:.58rem; letter-spacing:.08em; text-align:right; line-height:1.4; }
-.mb { margin-bottom:1.2rem; }
-.ri-filter-bar { flex-basis:100%; }
-.fb-track { background:var(--fb-track-bg); border-radius:3px; height:5px; overflow:hidden; flex:1; }
-.fb-fill { height:100%; border-radius:3px; transition:width .4s ease; }
+/* ── Page shell ───────────────────────────────────────── */
+.ri-page { padding-bottom:0; }
 .site-footer { margin-top:auto; }
 
-/* ── Overview: feature cards ──────────────────────────── */
-.ri-feat-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1rem; margin-bottom:1.2rem; }
-.ri-feat-card {
-  background:linear-gradient(145deg,rgba(17,24,39,0.96),rgba(10,14,26,0.96));
-  border:1px solid var(--border); border-radius:14px; padding:1.1rem 1rem;
-  cursor:pointer; transition:border-color .2s, transform .15s;
-  display:flex; flex-direction:column; gap:.5rem;
+/* ── Hero ─────────────────────────────────────────────── */
+.ri-hero {
+  border-bottom:1px solid var(--border);
+  background:
+    radial-gradient(circle at 10% 0%,rgba(201,168,76,.1),transparent 30%),
+    linear-gradient(135deg,rgba(30,42,58,.92),rgba(10,14,26,.96));
 }
-.ri-feat-card:hover { border-color:var(--border-gold); transform:translateY(-2px); }
-.ri-feat-card-icon { font-size:1.3rem; }
-.ri-feat-card-name { font-family:var(--font-mono); font-size:.65rem; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--gold); }
-.ri-feat-card-stat { font-family:var(--font-mono); font-size:.7rem; color:var(--white); font-weight:600; }
-.ri-feat-card-sub { font-size:.68rem; color:var(--steel); line-height:1.4; }
-.ri-feat-card-link { font-family:var(--font-mono); font-size:.58rem; color:var(--gold); margin-top:auto; }
-
-/* ── Overview: high signals list ─────────────────────── */
-.ri-high-item {
-  display:flex; align-items:flex-start; gap:.8rem;
-  padding:.75rem 0; border-bottom:1px solid var(--border);
+.ri-hero__inner { max-width:1200px; margin:0 auto; padding:56px 60px 40px; }
+.ri-breadcrumb {
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+  font-family:var(--font-mono); font-size:11px; color:var(--steel);
+  letter-spacing:.08em; text-transform:uppercase;
 }
-.ri-high-item:last-child { border-bottom:none; }
-.ri-high-dot { width:8px; height:8px; border-radius:50%; background:var(--crimson); flex-shrink:0; margin-top:4px; }
-.ri-high-dot.med { background:var(--amber); }
-.ri-high-title { font-size:.76rem; font-weight:600; color:var(--white); margin-bottom:.2rem; }
-.ri-high-meta { font-size:.65rem; color:var(--steel); display:flex; gap:.6rem; align-items:center; }
-.ri-sev-pill { font-family:var(--font-mono); font-size:.56rem; padding:2px 7px; border-radius:3px; font-weight:600; }
-.ri-sev-pill.high { background:var(--crimson-dim); color:var(--crimson); border:1px solid var(--red-border); }
-.ri-sev-pill.med  { background:rgba(240,160,32,.1); color:var(--amber); border:1px solid var(--amber-border); }
-.ri-sev-pill.low  { background:var(--emerald-dim); color:var(--emerald); border:1px solid var(--green-border); }
-
-/* ── Overview: ESG gap compact ───────────────────────── */
-.ri-gap-compact { display:flex; align-items:center; gap:1rem; }
-.ri-gap-box { flex:1; padding:.9rem; border-radius:10px; }
-.ri-gap-box-label { font-family:var(--font-mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.3rem; }
-.ri-gap-box-score { font-family:var(--font-display); font-size:1.5rem; font-weight:700; line-height:1; }
-.ri-gap-box-sub { font-size:.65rem; margin-top:.2rem; font-weight:300; }
-.ri-gap-arrow-mid { text-align:center; font-size:1.2rem; color:var(--crimson); }
-.ri-gap-lead-sm { margin-top:.8rem; padding:.6rem .8rem; background:var(--crimson-dim); border:1px solid var(--red-border); border-radius:8px; font-size:.7rem; color:var(--white-2); line-height:1.5; }
-.ri-gap-lead-sm strong { color:var(--crimson); }
-
-/* ── Scanner: live feed ───────────────────────────────── */
-.ri-feed-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.8rem; }
-.ri-feed-count { font-family:var(--font-mono); font-size:.62rem; color:var(--steel); }
-.ri-search-input {
-  width:100%; background:var(--glass); border:1px solid var(--border);
-  border-radius:8px; padding:.5rem .8rem; color:var(--white);
-  font-family:var(--font-mono); font-size:.7rem; outline:none;
-  transition:border-color .2s; margin-bottom:.8rem;
+.ri-breadcrumb a { color:var(--steel); text-decoration:none; }
+.ri-breadcrumb a:hover { color:var(--gold); }
+.ri-kicker {
+  display:inline-flex; align-items:center; gap:8px; margin-bottom:14px;
+  padding:5px 14px; border:1px solid var(--border-gold); border-radius:999px;
+  background:var(--gold-dim); font-family:var(--font-mono); font-size:11px;
+  color:var(--gold); letter-spacing:.1em; text-transform:uppercase;
 }
-.ri-search-input:focus { border-color:var(--border-gold); }
-.ri-search-input::placeholder { color:var(--steel); }
-.ri-feed-list { max-height:520px; overflow-y:auto; padding-right:4px; }
-.ri-feed-list::-webkit-scrollbar { width:3px; }
-.ri-feed-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-.ri-feed-item {
-  display:grid; grid-template-columns:100px 12px 1fr; gap:.6rem;
-  align-items:flex-start; padding:.7rem 0; border-bottom:1px solid var(--border);
-  opacity:0; animation:feedIn .3s forwards;
+.ri-kicker::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--emerald); box-shadow:0 0 12px rgba(0,200,150,.7);
+  animation:pulse 1.8s infinite;
 }
-@keyframes feedIn { to { opacity:1; } }
-.ri-feed-item:last-child { border-bottom:none; }
-.ri-feed-dt { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); line-height:1.45; padding-top:2px; }
-.ri-feed-dot { width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0; }
-.ri-feed-body { }
-.ri-feed-title { font-size:.76rem; font-weight:600; color:var(--white); margin-bottom:.2rem; }
-.ri-feed-desc { font-size:.7rem; color:var(--white-2); line-height:1.5; font-weight:300; }
-.ri-feed-badges { display:flex; gap:.4rem; margin-top:.35rem; flex-wrap:wrap; align-items:center; }
-.ri-feed-cat { font-family:var(--font-mono); font-size:.57rem; padding:2px 7px; border-radius:3px; font-weight:600; }
-.ri-feed-corroboration { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
-.ri-feed-vs { font-size:.63rem; color:var(--steel); font-style:italic; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+.ri-hero__title {
+  font-family:var(--font-display); font-size:clamp(34px,5vw,60px);
+  font-weight:900; line-height:1.06; margin:0;
+}
+.ri-hero__title span { color:var(--gold); }
+.ri-hero__copy { margin-top:12px; color:var(--steel); font-size:15px; line-height:1.7; max-width:640px; }
 
-/* ── Classifier: heatmap ──────────────────────────────── */
-.ri-heatmap { width:100%; border-collapse:separate; border-spacing:6px; margin-bottom:1rem; }
-.ri-heatmap th { font-family:var(--font-mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.1em; color:var(--steel); padding:.4rem .6rem; text-align:left; }
-.ri-heatmap td { padding:.65rem .8rem; border-radius:8px; font-size:.7rem; font-weight:600; font-family:var(--font-mono); text-align:center; cursor:pointer; transition:opacity .15s; }
-.ri-heatmap td:hover { opacity:.75; }
-.hm-high { background:var(--crimson-dim); color:var(--crimson); border:1px solid var(--red-border); }
-.hm-med  { background:rgba(240,160,32,.1); color:var(--amber); border:1px solid var(--amber-border); }
-.hm-low  { background:var(--emerald-dim); color:var(--emerald); border:1px solid var(--green-border); }
-
-/* ── Classifier: existing grid ────────────────────────── */
-.ri-classifier-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:.8rem; }
-.ri-cat-header { display:flex; align-items:center; gap:.4rem; margin-bottom:.7rem; padding-bottom:.5rem; border-bottom:2px solid; }
-.ri-cat-icon { font-size:.85rem; }
-.ri-cat-name { font-family:var(--font-mono); font-size:.65rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
-.ri-cat-count { font-family:var(--font-mono); font-size:.6rem; margin-left:auto; opacity:.6; }
-.ri-signal-card { padding:.75rem .9rem; border-radius:8px; border:1px solid; margin-bottom:.5rem; }
-.ri-signal-card:last-child { margin-bottom:0; }
-.ri-signal-title { font-size:.76rem; font-weight:600; color:var(--white); margin-bottom:.28rem; }
-.ri-signal-desc { font-size:.7rem; color:var(--white-2); line-height:1.5; font-weight:300; }
-.ri-signal-meta { display:flex; align-items:center; justify-content:space-between; margin-top:.45rem; flex-wrap:wrap; gap:.3rem; }
-.ri-signal-source-link { font-family:var(--font-mono); font-size:.6rem; color:var(--gold); text-decoration:none; border-bottom:1px dotted var(--border-gold); }
-.ri-signal-source-link:hover { color:var(--gold-light); }
-.ri-signal-source-plain { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
-.ri-signal-right { display:flex; align-items:center; gap:.5rem; }
-.ri-signal-age { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
-.ri-alert-btn { font-family:var(--font-mono); font-size:.56rem; padding:2px 8px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--steel); cursor:pointer; transition:all .15s; white-space:nowrap; }
-.ri-alert-btn:hover { border-color:var(--gold); color:var(--gold); }
-.ri-alert-btn.alerted { background:var(--gold-dim); border-color:var(--border-gold); color:var(--gold-light); }
-
-/* ── Severity: trend chart ────────────────────────────── */
-.ri-trend-svg { width:100%; height:120px; display:block; }
-.ri-score-change-item { display:flex; align-items:flex-start; gap:.7rem; padding:.6rem 0; border-bottom:1px solid var(--border); }
-.ri-score-change-item:last-child { border-bottom:none; }
-.ri-score-change-delta { font-family:var(--font-mono); font-size:.78rem; font-weight:700; min-width:48px; }
-.ri-score-change-delta.up { color:var(--crimson); }
-.ri-score-change-delta.down { color:var(--emerald); }
-.ri-score-change-title { font-size:.73rem; font-weight:600; color:var(--white); margin-bottom:.15rem; }
-.ri-score-change-date { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
-
-/* ── Severity: existing display ───────────────────────── */
-.ri-scanner-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; }
-.ri-scan-stat { text-align:center; padding:.8rem; background:var(--glass); border:1px solid var(--border); border-radius:10px; }
-.ri-scan-stat-val { font-family:var(--font-display); font-size:1.6rem; font-weight:700; line-height:1; }
-.ri-scan-stat-label { font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; color:var(--steel); margin-top:.25rem; }
-.ri-severity-display { text-align:center; padding:.6rem 0; }
-.ri-sev-score { font-family:var(--font-display); font-size:3rem; font-weight:900; line-height:1; letter-spacing:-.02em; }
-.ri-sev-label { font-family:var(--font-mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; margin-top:.3rem; font-weight:600; }
-.ri-sev-desc { font-size:.75rem; color:var(--steel); margin-top:.4rem; font-weight:300; }
-.ri-sev-row { display:grid; grid-template-columns:90px 1fr 60px; gap:8px; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
-.ri-sev-row:last-child { border-bottom:none; }
-.ri-sev-cat { font-size:.72rem; color:var(--white-2); }
-.ri-sev-badge { font-family:var(--font-mono); font-size:.6rem; font-weight:600; padding:2px 8px; border-radius:3px; text-align:center; letter-spacing:.06em; }
-
-/* ── AI Explanations ──────────────────────────────────── */
-.ri-explain-item { border:1px solid var(--border); border-radius:12px; background:var(--glass); margin-bottom:.9rem; overflow:hidden; }
-.ri-explain-item:last-child { margin-bottom:0; }
-.ri-explain-header { display:flex; align-items:center; gap:.6rem; padding:.85rem 1rem; cursor:pointer; }
-.ri-explain-cat-badge { font-family:var(--font-mono); font-size:.58rem; padding:2px 7px; border-radius:3px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
-.ri-explain-title { font-size:.78rem; font-weight:600; color:var(--white); flex:1; }
-.ri-explain-confidence { font-family:var(--font-mono); font-size:.58rem; padding:2px 8px; border-radius:3px; }
-.ri-explain-confidence.high-conf { background:var(--emerald-dim); color:var(--emerald); border:1px solid var(--green-border); }
-.ri-explain-confidence.med-conf  { background:rgba(240,160,32,.1); color:var(--amber); border:1px solid var(--amber-border); }
-.ri-explain-confidence.spec-conf { background:var(--glass); color:var(--steel); border:1px solid var(--border); }
-.ri-explain-chevron { font-size:.65rem; color:var(--steel); transition:transform .2s; margin-left:auto; }
-.ri-explain-chevron.open { transform:rotate(180deg); }
-.ri-explain-updated { font-family:var(--font-mono); font-size:.58rem; color:var(--steel); padding:0 1rem .5rem; }
-.ri-explain-body-wrap { padding:0 1rem .9rem; display:none; }
-.ri-explain-body-wrap.open { display:block; }
-.ri-explain-body { font-size:.74rem; color:var(--white-2); line-height:1.55; font-weight:300; }
-.ri-explain-why { margin-top:.5rem; padding:.45rem .65rem; background:var(--gold-dim); border-left:2px solid var(--gold); font-size:.7rem; color:var(--white-2); font-style:italic; line-height:1.5; }
-
-/* ── Action Recommendations ───────────────────────────── */
-.ri-action-item { padding:.95rem 1rem 1rem; border-radius:12px; margin-bottom:.8rem; border:1px solid; }
-.ri-action-item:last-child { margin-bottom:0; }
-.ri-action-top { display:flex; align-items:flex-start; justify-content:space-between; gap:.6rem; margin-bottom:.4rem; flex-wrap:wrap; }
-.ri-action-verb { font-family:var(--font-mono); font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:3px 10px; border-radius:4px; }
-.ri-action-priority { font-family:var(--font-mono); font-size:.58rem; opacity:.7; }
-.ri-action-due { font-family:var(--font-mono); font-size:.58rem; color:var(--gold); margin-left:auto; }
-.ri-action-title { font-size:.78rem; font-weight:600; color:var(--white); margin-bottom:.3rem; }
-.ri-action-desc { font-size:.72rem; color:var(--white-2); line-height:1.5; font-weight:300; margin-bottom:.7rem; }
-.ri-action-footer { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
-.ri-status-btn { font-family:var(--font-mono); font-size:.58rem; padding:3px 10px; border-radius:4px; border:1px solid var(--border); background:var(--glass); color:var(--steel); cursor:pointer; transition:all .15s; }
-.ri-status-btn.pending  { color:var(--amber); border-color:var(--amber-border); background:rgba(240,160,32,.07); }
-.ri-status-btn.inreview { color:var(--blue); border-color:rgba(90,176,232,.35); background:rgba(90,176,232,.07); }
-.ri-status-btn.acted    { color:var(--emerald); border-color:var(--green-border); background:var(--emerald-dim); }
-.ri-status-btn.dismissed{ color:var(--steel); border-color:var(--border); background:var(--glass); }
-.ri-action-note { flex:1; min-width:160px; background:var(--glass); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:var(--white-2); font-family:var(--font-mono); font-size:.65rem; outline:none; resize:none; height:28px; transition:border-color .2s; overflow:hidden; }
-.ri-action-note:focus { border-color:var(--border-gold); }
-.ri-action-note::placeholder { color:var(--steel); }
+/* ── Sticky company switcher ─────────────────────────── */
+.ri-switcher {
+  position:sticky; top:64px; z-index:50;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:14px 60px; border-bottom:1px solid var(--border);
+  background:rgba(10,14,26,.88); backdrop-filter:blur(12px);
+}
+.ri-switcher__label { font-family:var(--font-mono); font-size:11px; color:var(--steel); letter-spacing:.1em; text-transform:uppercase; flex-shrink:0; }
+.ri-switcher__btns { display:flex; gap:8px; flex-wrap:wrap; }
+.ri-co-btn {
+  padding:6px 14px; border:1px solid var(--border); border-radius:6px;
+  background:rgba(255,255,255,.03); color:var(--steel);
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase; cursor:pointer;
+  transition:all .2s;
+}
+.ri-co-btn:hover { border-color:var(--border-gold); color:var(--white); }
+.ri-co-btn.active { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.ri-scan-stamp { font-family:var(--font-mono); font-size:11px; color:var(--steel); flex-shrink:0; }
 
 /* ── Scan overlay ─────────────────────────────────────── */
 .ri-scan-overlay {
   display:none; background:var(--ink-2); border:1px solid var(--border-gold);
-  border-radius:16px; padding:2.5rem; text-align:center; margin-bottom:1.2rem;
+  border-radius:16px; padding:2.5rem; text-align:center;
 }
-.ri-scan-progress-bar { height:3px; background:var(--glass); border-radius:2px; overflow:hidden; width:100%; max-width:320px; margin:0 auto; }
-.ri-scan-progress-fill { height:100%; background:var(--gold); width:0%; transition:width .3s ease; border-radius:2px; }
+.ri-progress-bar { height:3px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; max-width:320px; margin:0 auto; }
+.ri-progress-fill { height:100%; background:var(--gold); width:0%; transition:width .3s ease; border-radius:2px; }
+.ri-progress-msg { font-family:var(--font-mono); font-size:.7rem; color:var(--steel); margin-top:.8rem; }
 
-/* ── Banner ───────────────────────────────────────────── */
-.ri-banner { display:flex; align-items:center; justify-content:space-between; background:linear-gradient(135deg,var(--ink-3),var(--ink-2)); border:1px solid var(--border-gold); border-radius:16px; padding:1rem 1.5rem; margin-bottom:1.2rem; }
-.ri-banner-title { font-family:var(--font-display); font-size:1rem; font-weight:700; color:var(--white); margin-bottom:.2rem; }
-.ri-banner-sub { font-size:.68rem; color:var(--steel); font-weight:300; }
-.ri-banner-right { display:flex; align-items:center; gap:.5rem; flex-shrink:0; }
-.ri-live-dot { width:8px; height:8px; border-radius:50%; background:var(--emerald); animation:ripulse 1.8s infinite; }
-@keyframes ripulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
-.ri-live-label { font-family:var(--font-mono); font-size:.65rem; color:var(--emerald); font-weight:600; letter-spacing:.1em; }
-.ri-scan-time { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
+/* ── Main content ─────────────────────────────────────── */
+.ri-main { max-width:1200px; margin:0 auto; padding:48px 60px 96px; display:none; }
+.ri-main.visible { display:block; }
+
+/* Section headers ─ the visual anchors for each section */
+.ri-section { margin-bottom:3.5rem; }
+.ri-section:last-child { margin-bottom:0; }
+.ri-section-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:1.4rem;
+  padding-bottom:.75rem; border-bottom:1px solid var(--border);
+}
+.ri-section-num {
+  font-family:var(--font-mono); font-size:.62rem; font-weight:600;
+  color:var(--gold); letter-spacing:.1em; padding:3px 9px;
+  border:1px solid var(--border-gold); border-radius:20px;
+  background:var(--gold-dim); flex-shrink:0;
+}
+.ri-section-title { font-family:var(--font-display); font-size:1.15rem; font-weight:700; color:var(--white); }
+.ri-section-sub { font-size:.72rem; color:var(--steel); margin-left:auto; font-family:var(--font-mono); letter-spacing:.06em; }
+
+/* ── Cards ────────────────────────────────────────────── */
+.card {
+  background:linear-gradient(145deg,rgba(17,24,39,.96),rgba(10,14,26,.96));
+  border:1px solid var(--border); border-radius:16px; padding:1.3rem 1.4rem;
+}
+.card-label {
+  font-family:var(--font-mono); font-size:.62rem; color:#9dc7ff;
+  letter-spacing:.12em; text-transform:uppercase; margin-bottom:.8rem;
+}
+.two-col { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:1.2rem; }
+.three-col { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.2rem; }
+.mb { margin-bottom:1.2rem; }
+.fb-track { background:var(--fb-bg); border-radius:3px; height:5px; overflow:hidden; flex:1; }
+.fb-fill { height:100%; border-radius:3px; transition:width .5s ease; }
+
+/* ── Section 1: Verdict ───────────────────────────────── */
+.ri-verdict {
+  display:grid; grid-template-columns:auto 1fr auto; gap:2rem;
+  align-items:center; padding:1.6rem 1.8rem;
+}
+.ri-verdict-score-wrap { text-align:center; }
+.ri-verdict-score { font-family:var(--font-display); font-size:4.5rem; font-weight:900; line-height:1; letter-spacing:-.03em; }
+.ri-verdict-level { font-family:var(--font-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; margin-top:.3rem; }
+.ri-verdict-divider { width:1px; background:var(--border); align-self:stretch; }
+.ri-verdict-mid { display:flex; flex-direction:column; gap:1rem; }
+.ri-verdict-trend { display:flex; align-items:center; gap:.5rem; }
+.ri-verdict-trend-arrow { font-family:var(--font-mono); font-size:1.1rem; font-weight:700; }
+.ri-verdict-trend-arrow.up { color:#e84040; }
+.ri-verdict-trend-arrow.down { color:#00c896; }
+.ri-verdict-trend-text { font-size:.78rem; color:var(--white-2); }
+.ri-verdict-trend-period { font-family:var(--font-mono); font-size:.62rem; color:var(--steel); }
+.ri-verdict-desc { font-size:.78rem; color:var(--steel); line-height:1.55; }
+.ri-verdict-top-signal { padding:.7rem .9rem; border-radius:8px; border:1px solid; }
+.ri-verdict-signal-label { font-family:var(--font-mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.3rem; }
+.ri-verdict-signal-title { font-size:.82rem; font-weight:600; color:var(--white); }
+.ri-verdict-signal-cat { font-family:var(--font-mono); font-size:.6rem; margin-top:.3rem; }
+
+/* ── Section 2: Risk baseline ─────────────────────────── */
+.ri-cat-bar-row { display:flex; align-items:center; gap:.7rem; padding:.4rem 0; }
+.ri-cat-bar-label { font-size:.72rem; color:var(--white-2); min-width:92px; }
+.ri-cat-bar-track { height:7px; background:var(--fb-bg); border-radius:4px; flex:1; overflow:hidden; }
+.ri-cat-bar-fill { height:100%; border-radius:4px; }
+.ri-cat-bar-val { font-family:var(--font-mono); font-size:.65rem; min-width:18px; text-align:right; font-weight:600; }
+.ri-sev-row { display:grid; grid-template-columns:92px 1fr 52px; gap:8px; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
+.ri-sev-row:last-child { border-bottom:none; }
+.ri-sev-cat { font-size:.72rem; color:var(--white-2); }
+.ri-sev-badge { font-family:var(--font-mono); font-size:.58rem; font-weight:600; padding:2px 8px; border-radius:3px; text-align:center; letter-spacing:.06em; }
+.ri-chart-wrap { position:relative; width:100%; }
+.ri-chart-wrap.h180 { height:180px; }
+.ri-radar-legend { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:.6rem; }
+.ri-radar-legend-item { display:flex; align-items:center; gap:.3rem; font-size:.62rem; color:var(--steel); }
+.ri-radar-legend-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+/* ── Section 3: Signals list ──────────────────────────── */
+.ri-signals-toolbar { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
+.ri-filter-pill {
+  font-family:var(--font-mono); font-size:.6rem; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase; padding:4px 11px;
+  border-radius:20px; border:1px solid var(--border); background:rgba(255,255,255,.03);
+  color:var(--steel); cursor:pointer; transition:all .15s;
+}
+.ri-filter-pill:hover { color:var(--white); border-color:var(--white-2); }
+.ri-filter-pill.active { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.ri-signal-item {
+  display:grid; grid-template-columns:8px 1fr auto; gap:.9rem;
+  align-items:flex-start; padding:.9rem 0; border-bottom:1px solid var(--border);
+}
+.ri-signal-item:last-child { border-bottom:none; }
+.ri-signal-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+.ri-signal-dot.high { background:#e84040; }
+.ri-signal-dot.med  { background:var(--amber); }
+.ri-signal-dot.low  { background:#00c896; }
+.ri-signal-body { }
+.ri-signal-title { font-size:.8rem; font-weight:600; color:var(--white); margin-bottom:.25rem; }
+.ri-signal-desc { font-size:.72rem; color:var(--white-2); line-height:1.55; font-weight:300; }
+.ri-signal-footer { display:flex; align-items:center; gap:.5rem; margin-top:.45rem; flex-wrap:wrap; }
+.ri-signal-cat-badge { font-family:var(--font-mono); font-size:.57rem; padding:2px 7px; border-radius:3px; font-weight:600; }
+.ri-signal-age { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
+.ri-signal-src { font-family:var(--font-mono); font-size:.6rem; color:var(--gold); text-decoration:none; border-bottom:1px dotted rgba(201,168,76,.4); }
+.ri-signal-src:hover { color:var(--gold-light); }
+.ri-signal-src-plain { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); }
+.ri-signal-right { display:flex; flex-direction:column; align-items:flex-end; gap:.4rem; flex-shrink:0; }
+.ri-sev-pill { font-family:var(--font-mono); font-size:.57rem; padding:3px 8px; border-radius:3px; font-weight:600; white-space:nowrap; }
+.ri-sev-pill.high { background:rgba(232,64,64,.12); color:#e84040; border:1px solid var(--red-border); }
+.ri-sev-pill.med  { background:rgba(240,160,32,.1); color:var(--amber); border:1px solid var(--amber-border); }
+.ri-sev-pill.low  { background:rgba(0,200,150,.1); color:#00c896; border:1px solid var(--green-border); }
+.ri-alert-btn { font-family:var(--font-mono); font-size:.56rem; padding:2px 8px; border-radius:4px; border:1px solid var(--border); background:transparent; color:var(--steel); cursor:pointer; transition:all .15s; white-space:nowrap; }
+.ri-alert-btn:hover { border-color:var(--gold); color:var(--gold); }
+.ri-alert-btn.alerted { background:var(--gold-dim); border-color:var(--border-gold); color:var(--gold-light); }
+
+/* ── Section 4: Trajectory ────────────────────────────── */
+.ri-chart-wrap.h220 { height:220px; }
+
+/* ── Section 5: Explanations ──────────────────────────── */
+.ri-explain-item { border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,.02); margin-bottom:.8rem; overflow:hidden; }
+.ri-explain-item:last-child { margin-bottom:0; }
+.ri-explain-header { display:flex; align-items:center; gap:.7rem; padding:.9rem 1.1rem; cursor:pointer; transition:background .15s; }
+.ri-explain-header:hover { background:rgba(255,255,255,.025); }
+.ri-explain-cat { font-family:var(--font-mono); font-size:.57rem; padding:2px 7px; border-radius:3px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; flex-shrink:0; }
+.ri-explain-title { font-size:.8rem; font-weight:600; color:var(--white); flex:1; }
+.ri-explain-conf { font-family:var(--font-mono); font-size:.57rem; padding:2px 8px; border-radius:3px; flex-shrink:0; }
+.ri-explain-conf.hi { background:rgba(0,200,150,.1); color:#00c896; border:1px solid var(--green-border); }
+.ri-explain-conf.md { background:rgba(240,160,32,.1); color:var(--amber); border:1px solid var(--amber-border); }
+.ri-explain-conf.sp { background:rgba(255,255,255,.04); color:var(--steel); border:1px solid var(--border); }
+.ri-explain-chev { font-size:.62rem; color:var(--steel); transition:transform .2s; flex-shrink:0; }
+.ri-explain-chev.open { transform:rotate(180deg); }
+.ri-explain-updated { font-family:var(--font-mono); font-size:.57rem; color:var(--steel); padding:0 1.1rem .55rem; }
+.ri-explain-body { padding:0 1.1rem .95rem; display:none; }
+.ri-explain-body.open { display:block; }
+.ri-explain-text { font-size:.75rem; color:var(--white-2); line-height:1.6; font-weight:300; }
+.ri-explain-why { margin-top:.55rem; padding:.5rem .7rem; background:var(--gold-dim); border-left:2px solid var(--gold); font-size:.7rem; color:var(--white-2); font-style:italic; line-height:1.55; }
+
+/* ── Section 6: Actions ───────────────────────────────── */
+.ri-action-item { padding:1rem 1.1rem; border-radius:12px; margin-bottom:.8rem; border:1px solid; }
+.ri-action-item:last-child { margin-bottom:0; }
+.ri-action-top { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-bottom:.4rem; }
+.ri-action-verb { font-family:var(--font-mono); font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:3px 10px; border-radius:4px; }
+.ri-action-priority { font-family:var(--font-mono); font-size:.58rem; color:var(--steel); }
+.ri-action-due { font-family:var(--font-mono); font-size:.58rem; color:var(--gold); margin-left:auto; }
+.ri-action-title { font-size:.8rem; font-weight:600; color:var(--white); margin-bottom:.3rem; }
+.ri-action-desc { font-size:.73rem; color:var(--white-2); line-height:1.55; font-weight:300; margin-bottom:.75rem; }
+.ri-action-footer { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.ri-status-btn { font-family:var(--font-mono); font-size:.58rem; padding:3px 10px; border-radius:4px; border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--steel); cursor:pointer; transition:all .15s; }
+.ri-status-btn.pending  { color:var(--amber); border-color:var(--amber-border); background:rgba(240,160,32,.07); }
+.ri-status-btn.inreview { color:var(--blue); border-color:rgba(90,176,232,.35); background:rgba(90,176,232,.07); }
+.ri-status-btn.acted    { color:#00c896; border-color:var(--green-border); background:rgba(0,200,150,.07); }
+.ri-status-btn.dismissed{ color:var(--steel); border-color:var(--border); }
+.ri-action-note { flex:1; min-width:160px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:var(--white-2); font-family:var(--font-mono); font-size:.65rem; outline:none; resize:none; height:28px; transition:border-color .2s; overflow:hidden; }
+.ri-action-note:focus { border-color:var(--border-gold); }
+.ri-action-note::placeholder { color:var(--steel); }
+
+/* ── Company watch button ─────────────────────────────── */
+.ri-watch-btn {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:6px; cursor:pointer;
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase; transition:all .2s;
+  border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--steel);
+}
+.ri-watch-btn:hover { border-color:var(--emerald); color:var(--emerald); }
+.ri-watch-btn.watching {
+  border-color:var(--emerald); color:var(--emerald);
+  background:rgba(0,200,150,.08);
+}
+.ri-watch-dot {
+  width:6px; height:6px; border-radius:50%; background:var(--emerald);
+  opacity:0; transition:opacity .2s;
+}
+.ri-watch-btn.watching .ri-watch-dot { opacity:1; animation:pulse 1.8s infinite; }
+
+/* ── Score explanation panel ─────────────────────────── */
+.ri-calc-btn {
+  display:inline-flex; align-items:center; gap:5px; margin-top:1rem;
+  background:none; border:none; cursor:pointer; padding:0;
+  font-family:var(--font-mono); font-size:.62rem; color:var(--steel);
+  letter-spacing:.06em; transition:color .15s;
+}
+.ri-calc-btn:hover { color:var(--gold); }
+.ri-calc-btn-chev { transition:transform .2s; display:inline-block; font-size:.55rem; }
+.ri-calc-btn-chev.open { transform:rotate(180deg); }
+.ri-calc-panel {
+  display:none; margin-top:.9rem; padding:1.1rem 1.2rem;
+  background:rgba(255,255,255,.025); border:1px solid var(--border);
+  border-radius:12px; animation:fadeSlide .2s ease;
+}
+.ri-calc-panel.open { display:block; }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.ri-calc-narrative {
+  font-size:.76rem; color:var(--white-2); line-height:1.7; font-weight:300;
+  margin-bottom:1.1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);
+}
+.ri-calc-narrative-loading {
+  display:flex; align-items:center; gap:.5rem;
+  font-family:var(--font-mono); font-size:.65rem; color:var(--steel);
+}
+.ri-calc-narrative-ai-label {
+  font-family:var(--font-mono); font-size:.57rem; color:var(--emerald);
+  letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;
+}
+.ri-calc-formula-title {
+  font-family:var(--font-mono); font-size:.62rem; color:var(--steel);
+  text-transform:uppercase; letter-spacing:.1em; margin-bottom:.8rem;
+}
+.ri-calc-cat-row {
+  display:grid; grid-template-columns:110px 1fr 50px 70px; gap:8px;
+  align-items:center; padding:5px 0; border-bottom:1px solid var(--border);
+}
+.ri-calc-cat-row:last-child { border-bottom:none; }
+.ri-calc-cat-name { font-size:.7rem; color:var(--white-2); }
+.ri-calc-cat-bar-track { height:5px; background:var(--fb-bg); border-radius:3px; overflow:hidden; }
+.ri-calc-cat-bar-fill { height:100%; border-radius:3px; }
+.ri-calc-cat-weight { font-family:var(--font-mono); font-size:.6rem; color:var(--steel); text-align:right; }
+.ri-calc-cat-contrib { font-family:var(--font-mono); font-size:.65rem; font-weight:600; text-align:right; }
+.ri-calc-total-row {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:.8rem; padding-top:.7rem; border-top:1px solid var(--border);
+}
+.ri-calc-total-label { font-family:var(--font-mono); font-size:.62rem; color:var(--steel); text-transform:uppercase; letter-spacing:.08em; }
+.ri-calc-total-val { font-family:var(--font-display); font-size:1.4rem; font-weight:700; }
+.ri-calc-method {
+  margin-top:.9rem; padding:.65rem .8rem; background:var(--glass);
+  border-radius:8px; font-size:.68rem; color:var(--steel); line-height:1.6;
+}
+.ri-calc-method strong { color:var(--white-2); }
 
 /* ── Responsive ───────────────────────────────────────── */
 @media(max-width:1024px){
-  .risk-hero__inner,.risk-section,.risk-toolbar,.ri-subnav{ padding-left:24px; padding-right:24px; }
-  .risk-hero__grid,.two-col,.three-col{ grid-template-columns:1fr; }
-  .risk-hero__stats{ max-width:520px; }
-  .ri-feat-grid{ grid-template-columns:repeat(3,1fr); }
-  .ri-classifier-grid{ grid-template-columns:repeat(2,1fr); }
+  .ri-hero__inner,.ri-main,.ri-switcher { padding-left:24px; padding-right:24px; }
+  .two-col,.three-col { grid-template-columns:1fr; }
+  .ri-verdict { grid-template-columns:1fr; gap:1.2rem; }
+  .ri-verdict-divider { display:none; }
 }
-@media(max-width:680px){
-  .risk-hero__inner{ padding-top:52px; }
-  .risk-toolbar{ flex-direction:column; align-items:flex-start; }
-  .ri-feat-grid{ grid-template-columns:repeat(2,1fr); }
-  .ri-classifier-grid{ grid-template-columns:1fr; }
-  .risk-hero__stats{ grid-template-columns:1fr; }
+@media(max-width:640px){
+  .ri-hero__inner { padding-top:40px; }
+  .ri-switcher { flex-direction:column; align-items:flex-start; }
+  .ri-verdict-score { font-size:3rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- ── Site nav (unchanged) ──────────────────────────── -->
+<!-- Site nav -->
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <a href="app2.html" class="nav-logo" aria-label="ESG Momentum Engine home">
     <div class="nav-logo__mark" aria-hidden="true">E</div>
@@ -327,11 +335,10 @@
   </a>
   <ul class="nav-links" role="list">
     <li><a href="app2.html">Home</a></li>
-    <li><a href="app2.html#factors">Factors</a></li>
     <li><a href="app2.html#platform" class="active">Platform</a></li>
-    <li><a href="app2.html#asean">ASEAN</a></li>
+    <li><a href="risk-intelligence.html">Risk Intelligence</a></li>
+    <li><a href="comparison.html">Compare</a></li>
     <li><a href="app2.html#pricing">Pricing</a></li>
-    <li><a href="app2.html#partners">Partners</a></li>
     <li><a href="contact.html" class="nav-cta">Request Demo</a></li>
   </ul>
   <button class="nav-hamburger" id="navToggle" aria-label="Open menu" aria-expanded="false">
@@ -344,277 +351,215 @@
   <a href="contact.html" class="nav-cta">Request Demo</a>
 </div>
 
-<div class="page-wrapper risk-page">
+<div class="page-wrapper ri-page">
 
-  <!-- ── Hero ──────────────────────────────────────────── -->
-  <header class="risk-hero">
-    <div class="risk-hero__inner">
-      <div class="risk-breadcrumb">
-        <a href="app2.html">Dashboard</a><span>/</span>
-        <a href="app2.html#platform">Platform</a><span>/</span>
-        <span>Risk Intelligence</span>
+  <!-- Hero -->
+  <header class="ri-hero">
+    <div class="ri-hero__inner">
+      <div class="ri-breadcrumb">
+        <a href="app2.html">Dashboard</a><span>/</span><span>Risk Intelligence</span>
       </div>
-      <div class="risk-hero__grid">
-        <div>
-          <div class="risk-kicker">Live ESG Risk Intelligence</div>
-          <h1 class="risk-title">Emerging ESG Risk <span>Detection</span></h1>
-          <p class="risk-copy">AI-powered monitoring for news, reports, regulatory updates, and hidden ESG signals that traditional ratings may miss.</p>
-        </div>
-        <div class="risk-hero__stats" aria-label="Risk intelligence summary">
-          <div class="risk-stat"><strong>4</strong><span>Signal Categories</span></div>
-          <div class="risk-stat"><strong>Real-time</strong><span>Scan Mode</span></div>
-          <div class="risk-stat"><strong>3</strong><span>Companies Demoed</span></div>
-          <div class="risk-stat"><strong>AI</strong><span>Explanations</span></div>
-        </div>
-      </div>
+      <div class="ri-kicker">Live ESG Risk Intelligence</div>
+      <h1 class="ri-hero__title">Emerging ESG Risk <span>Detection</span></h1>
+      <p class="ri-hero__copy">AI-powered monitoring of news, regulatory filings, and ESG reports to surface emerging risks before traditional ratings catch them.</p>
     </div>
   </header>
 
-  <!-- ── Company switcher (sticky) ─────────────────────── -->
-  <div class="risk-toolbar">
-    <div class="risk-toolbar__label">Company Context</div>
-    <div class="risk-company-switcher" aria-label="Company selector">
-      <button class="ri-company-btn active" type="button" onclick="switchCompany('DBS',this)">DBS Group</button>
-      <button class="ri-company-btn" type="button" onclick="switchCompany('GENT',this)">Genting</button>
-      <button class="ri-company-btn" type="button" onclick="switchCompany('GRAB',this)">Grab Holdings</button>
+  <!-- Sticky company switcher -->
+  <div class="ri-switcher">
+    <span class="ri-switcher__label">Viewing</span>
+    <div class="ri-switcher__btns" aria-label="Company selector">
+      <button class="ri-co-btn active" type="button" onclick="switchCompany('DBS',this)">DBS Group</button>
+      <button class="ri-co-btn" type="button" onclick="switchCompany('GENT',this)">Genting</button>
+      <button class="ri-co-btn" type="button" onclick="switchCompany('GRAB',this)">Grab Holdings</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+      <button class="ri-watch-btn" id="ri-watch-btn" onclick="toggleWatch()">
+        <div class="ri-watch-dot"></div>
+        <span id="ri-watch-label">Watch company</span>
+      </button>
+      <span class="ri-scan-stamp" id="ri-scan-time">—</span>
     </div>
   </div>
 
-  <!-- ── Sub-navigation tab bar ────────────────────────── -->
-  <nav class="ri-subnav" aria-label="Risk Intelligence sections">
-    <button class="ri-tab active"  onclick="riShowTab('overview',this)">Overview</button>
-    <button class="ri-tab" onclick="riShowTab('scanner',this)">Risk Scanner</button>
-    <button class="ri-tab" onclick="riShowTab('classifier',this)">Risk Classifier</button>
-    <button class="ri-tab" onclick="riShowTab('severity',this)">Severity Score</button>
-    <button class="ri-tab" onclick="riShowTab('explain',this)">AI Explanations</button>
-    <button class="ri-tab" onclick="riShowTab('actions',this)">Action Recommendations</button>
-  </nav>
-
-  <main class="risk-section">
-
-    <!-- ══ SCAN OVERLAY (shared across all tabs) ════════ -->
+  <!-- Scan overlay -->
+  <div style="max-width:1200px;margin:0 auto;padding:48px 60px 0;" id="ri-scan-wrap">
     <div class="ri-scan-overlay" id="ri-scan-overlay">
-      <div class="ri-scan-progress-bar"><div class="ri-scan-progress-fill" id="ri-progress-fill"></div></div>
-      <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--steel);margin-top:.8rem;" id="ri-scan-status">Initialising scan…</div>
+      <div class="ri-progress-bar"><div class="ri-progress-fill" id="ri-progress-fill"></div></div>
+      <div class="ri-progress-msg" id="ri-scan-status">Initialising scan…</div>
     </div>
+  </div>
 
-    <!-- ══ TAB 1: OVERVIEW ══════════════════════════════ -->
-    <div class="tab-panel active" id="panel-overview">
-      <div class="ri-banner">
-        <div class="ri-banner-left">
-          <div class="ri-banner-title">Emerging ESG Risk Intelligence</div>
-          <div class="ri-banner-sub">AI-powered detection of emerging ESG risk signals that traditional frameworks miss · Real-time · ASEAN-focused</div>
-        </div>
-        <div class="ri-banner-right">
-          <div class="ri-live-dot"></div>
-          <span class="ri-live-label">LIVE SCAN</span>
-          <span class="ri-scan-time" id="ri-scan-time">—</span>
-        </div>
+  <!-- Main content — single scroll -->
+  <main class="ri-main" id="ri-main">
+
+    <!-- ═══ SECTION 1: VERDICT ════════════════════════════ -->
+    <section class="ri-section" aria-labelledby="s1-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">01</span>
+        <h2 class="ri-section-title" id="s1-title">Risk verdict</h2>
+        <span class="ri-section-sub">Current assessment · at a glance</span>
       </div>
-
-      <!-- ESG Rating Gap -->
-      <div class="card mb" id="ri-gap-card">
-        <div class="card-title">ESG Rating Gap <span class="card-title-right">Our signals vs traditional framework · today</span></div>
-        <div id="ri-gap-content"></div>
+      <div class="card">
+        <div class="ri-verdict" id="ri-verdict"></div>
       </div>
+    </section>
 
-      <!-- Feature cards row -->
-      <div class="ri-feat-grid" id="ri-feat-grid"></div>
-
-      <!-- High-severity signals + recent timeline -->
+    <!-- ═══ SECTION 2: CURRENT RISK BASELINE ════════════ -->
+    <section class="ri-section" aria-labelledby="s2-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">02</span>
+        <h2 class="ri-section-title" id="s2-title">Current risk baseline</h2>
+        <span class="ri-section-sub">Where the risk sits across categories</span>
+      </div>
       <div class="two-col">
         <div class="card">
-          <div class="card-title">High Severity Signals <span class="card-title-right" id="ri-high-count-label">All high-priority signals</span></div>
-          <div id="ri-high-signals"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Recent Signal Timeline <span class="card-title-right">Latest 3 detections</span></div>
-          <div id="ri-overview-timeline"></div>
-          <div style="margin-top:.8rem;">
-            <button onclick="riShowTab('scanner',document.querySelector('.ri-tab:nth-child(2)'))" style="background:none;border:none;color:var(--gold);font-family:var(--font-mono);font-size:.62rem;cursor:pointer;padding:0;letter-spacing:.06em;">View all in Scanner →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ TAB 2: RISK SCANNER ══════════════════════════ -->
-    <div class="tab-panel" id="panel-scanner">
-      <div class="two-col mb">
-        <!-- Scan stats -->
-        <div class="card">
-          <div class="card-title">Risk Scanner <span class="card-title-right">Scanning: News · Reports · Regulatory updates</span></div>
-          <div class="ri-scanner-summary" id="ri-scanner-summary"></div>
-          <div style="margin-top:1rem;">
-            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Signal Source Breakdown</div>
-            <div id="ri-source-bars"></div>
-          </div>
-        </div>
-        <!-- Severity score (compact in scanner) -->
-        <div class="card">
-          <div class="card-title">Risk Severity Score <span class="card-title-right">Composite · AI-assessed</span></div>
-          <div class="ri-severity-display" id="ri-severity-display-scanner"></div>
+          <div class="card-label">Signal breakdown by category</div>
+          <div id="ri-cat-bars"></div>
           <div style="margin-top:1.2rem;">
-            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Severity by Category</div>
-            <div id="ri-severity-breakdown-scanner"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live signal feed -->
-      <div class="card">
-        <div class="card-title">Signal Timeline <span class="card-title-right">Chronological · Signals detected before formal ESG rating updates</span></div>
-        <div class="ri-feed-header">
-          <span class="ri-feed-count" id="ri-feed-count">Showing — signals</span>
-        </div>
-        <input class="ri-search-input" type="text" id="ri-search" placeholder="Search signals by keyword…" oninput="riFilterFeed(this.value)">
-        <div class="ri-feed-list" id="ri-feed-list"></div>
-      </div>
-    </div>
-
-    <!-- ══ TAB 3: RISK CLASSIFIER ════════════════════════ -->
-    <div class="tab-panel" id="panel-classifier">
-      <!-- Cross-company heatmap -->
-      <div class="card mb">
-        <div class="card-title">Cross-Company Heatmap <span class="card-title-right">Severity by category across all companies · click cell to view signals</span></div>
-        <div id="ri-heatmap-wrap"></div>
-      </div>
-
-      <!-- Full classifier grid -->
-      <div class="card">
-        <div class="card-title">
-          Risk Classifier
-          <span class="card-title-right">Categorised signals · E · S · G · AI/Digital</span>
-          <div class="ri-filter-bar" id="ri-filter-bar"></div>
-        </div>
-        <div class="ri-classifier-grid" id="ri-classifier-grid"></div>
-      </div>
-    </div>
-
-    <!-- ══ TAB 4: SEVERITY SCORE ════════════════════════ -->
-    <div class="tab-panel" id="panel-severity">
-      <div class="two-col mb">
-        <div class="card">
-          <div class="card-title">Composite Severity Score <span class="card-title-right">AI-assessed · emerging signals only</span></div>
-          <div class="ri-severity-display" id="ri-severity-display"></div>
-          <div style="margin-top:1.2rem;">
-            <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem;">Severity by Category</div>
-            <div id="ri-severity-breakdown"></div>
+            <div class="card-label">Severity per category</div>
+            <div id="ri-sev-breakdown"></div>
           </div>
         </div>
         <div class="card">
-          <div class="card-title">Severity Trend <span class="card-title-right">Weekly score history · last 8 weeks</span></div>
-          <svg class="ri-trend-svg" id="ri-trend-svg" viewBox="0 0 500 120" preserveAspectRatio="none"></svg>
-          <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:1rem;margin-bottom:.6rem;">Score Change Log</div>
-          <div id="ri-score-change-log"></div>
+          <div class="card-label">Risk profile</div>
+          <div class="ri-chart-wrap h180"><canvas id="ri-radar" role="img" aria-label="Radar chart showing risk profile by category"></canvas></div>
+          <div class="ri-radar-legend" id="ri-radar-legend"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ══ TAB 5: AI EXPLANATIONS ════════════════════════ -->
-    <div class="tab-panel" id="panel-explain">
-      <div class="card">
-        <div class="card-title">AI Explanation Panel <span class="card-title-right">Why each signal matters to investors · click to expand</span></div>
-        <div id="ri-explanation-feed"></div>
+    <!-- ═══ SECTION 3: EMERGING SIGNALS ════════════════ -->
+    <section class="ri-section" aria-labelledby="s3-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">03</span>
+        <h2 class="ri-section-title" id="s3-title">Emerging risk signals</h2>
+        <span class="ri-section-sub" id="ri-signals-count-label">—</span>
       </div>
-    </div>
+      <div class="card">
+        <div class="ri-signals-toolbar" id="ri-signals-toolbar"></div>
+        <div id="ri-signals-list"></div>
+      </div>
+    </section>
 
-    <!-- ══ TAB 6: ACTION RECOMMENDATIONS ════════════════ -->
-    <div class="tab-panel" id="panel-actions">
-      <div class="card">
-        <div class="card-title">Investor Action Recommendations <span class="card-title-right">Priority queue · AI-suggested next steps · track your workflow</span></div>
-        <div id="ri-action-feed"></div>
+    <!-- ═══ SECTION 4: RISK TRAJECTORY ══════════════════ -->
+    <section class="ri-section" aria-labelledby="s4-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">04</span>
+        <h2 class="ri-section-title" id="s4-title">Risk trajectory</h2>
+        <span class="ri-section-sub">Is this company getting safer or more dangerous?</span>
       </div>
-    </div>
+      <div class="card">
+        <div class="card-label" id="ri-traj-label">8-week risk score history</div>
+        <div class="ri-chart-wrap h220"><canvas id="ri-trend" role="img" aria-label="Line chart showing 8-week risk score trajectory"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 5: AI EXPLANATIONS ══════════════════ -->
+    <section class="ri-section" aria-labelledby="s5-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">05</span>
+        <h2 class="ri-section-title" id="s5-title">AI explanations</h2>
+        <span class="ri-section-sub">Why each signal matters · click to expand</span>
+      </div>
+      <div id="ri-explanations"></div>
+    </section>
+
+    <!-- ═══ SECTION 6: RECOMMENDED ACTIONS ══════════════ -->
+    <section class="ri-section" aria-labelledby="s6-title">
+      <div class="ri-section-header">
+        <span class="ri-section-num">06</span>
+        <h2 class="ri-section-title" id="s6-title">Recommended actions</h2>
+        <span class="ri-section-sub">What to do next · track your workflow</span>
+      </div>
+      <div id="ri-actions"></div>
+    </section>
 
   </main>
 </div>
 
-<!-- ── Footer (unchanged) ─────────────────────────────── -->
+<!-- Footer -->
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__inner">
     <div>
-      <a href="app2.html" class="nav-logo" aria-label="ESG Momentum Engine home">
-        <div class="nav-logo__mark" aria-hidden="true">E</div>
-        <span class="nav-logo__text">ESG <em>Momentum</em></span>
-      </a>
+      <a href="app2.html" class="nav-logo"><div class="nav-logo__mark" aria-hidden="true">E</div><span class="nav-logo__text">ESG <em>Momentum</em></span></a>
       <p class="footer-brand__tagline">Real-time predictive ESG intelligence for ASEAN capital markets.</p>
-      <div class="footer-brand__badges">
-        <span class="footer-brand__badge">Singapore</span>
-        <span class="footer-brand__badge">CGSI Partner</span>
-        <span class="footer-brand__badge">AI-Powered</span>
-      </div>
+      <div class="footer-brand__badges"><span class="footer-brand__badge">Singapore</span><span class="footer-brand__badge">CGSI Partner</span><span class="footer-brand__badge">AI-Powered</span></div>
     </div>
-    <div>
-      <div class="footer-col__title">Platform</div>
-      <ul class="footer-col__links">
-        <li><a href="app2.html#platform">Dashboard</a></li>
-        <li><a href="app2.html#value">Momentum Tracker</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col__title">Company</div>
-      <ul class="footer-col__links">
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="methodology.html">Methodology</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col__title">Resources</div>
-      <ul class="footer-col__links">
-        <li><a href="whitepaper.html">ESG Whitepaper</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </div>
+    <div><div class="footer-col__title">Platform</div><ul class="footer-col__links"><li><a href="app2.html#platform">Dashboard</a></li></ul></div>
+    <div><div class="footer-col__title">Company</div><ul class="footer-col__links"><li><a href="about.html">About Us</a></li><li><a href="methodology.html">Methodology</a></li></ul></div>
+    <div><div class="footer-col__title">Resources</div><ul class="footer-col__links"><li><a href="whitepaper.html">ESG Whitepaper</a></li><li><a href="contact.html">Contact</a></li></ul></div>
   </div>
   <div class="site-footer__bottom">
     <span class="footer-copy">Copyright 2025 ESG Momentum Engine Pte. Ltd. | Singapore | UEN 202500000Z</span>
-    <nav class="footer-legal" aria-label="Legal links">
-      <a href="privacy.html">Privacy Policy</a><span aria-hidden="true">|</span>
-      <a href="terms.html">Terms of Service</a>
-    </nav>
+    <nav class="footer-legal"><a href="privacy.html">Privacy Policy</a><span>|</span><a href="terms.html">Terms of Service</a></nav>
   </div>
 </footer>
 
-<!-- ── Scripts ────────────────────────────────────────── -->
+<!-- Scripts -->
 <script>
 (function(){
-  const toggle=document.getElementById('navToggle'),drawer=document.getElementById('navDrawer');
-  if(toggle&&drawer){
-    toggle.addEventListener('click',()=>{
-      const open=drawer.classList.toggle('open');
-      toggle.setAttribute('aria-expanded',open);
-      const bars=toggle.querySelectorAll('span');
-      if(open){bars[0].style.cssText='transform:translateY(7px) rotate(45deg)';bars[1].style.cssText='opacity:0';bars[2].style.cssText='transform:translateY(-7px) rotate(-45deg)';}
-      else{bars.forEach(b=>b.style.cssText='');}
+  const t=document.getElementById('navToggle'),d=document.getElementById('navDrawer');
+  if(t&&d){
+    t.addEventListener('click',()=>{
+      const o=d.classList.toggle('open');
+      t.setAttribute('aria-expanded',o);
+      const b=t.querySelectorAll('span');
+      if(o){b[0].style.cssText='transform:translateY(7px) rotate(45deg)';b[1].style.cssText='opacity:0';b[2].style.cssText='transform:translateY(-7px) rotate(-45deg)';}
+      else{b.forEach(x=>x.style.cssText='');}
     });
-    drawer.querySelectorAll('a').forEach(l=>l.addEventListener('click',()=>{drawer.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.querySelectorAll('span').forEach(b=>b.style.cssText='');}));
+    d.querySelectorAll('a').forEach(l=>l.addEventListener('click',()=>{d.classList.remove('open');t.setAttribute('aria-expanded','false');t.querySelectorAll('span').forEach(x=>x.style.cssText='');}));
   }
 })();
 
 var ticker = 'DBS';
+const RI_ACTION_STATE = {};
+const RI_WATCHED = {};  // { DBS: true, GENT: false, ... }
 
-/* Tab switching — only within the risk intelligence sub-nav */
-function riShowTab(name, el) {
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  document.querySelectorAll('.ri-tab').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-}
-
-/* Company switch → always back to overview */
 function switchCompany(co, btn) {
   ticker = co;
-  document.querySelectorAll('.ri-company-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.ri-co-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  runScanAnimation(()=>renderRiskIntel());
+  updateWatchBtn();
+  runScanAnimation(()=>renderRI());
+}
+
+function toggleWatch() {
+  RI_WATCHED[ticker] = !RI_WATCHED[ticker];
+  updateWatchBtn();
+  // Toast feedback
+  const msg = RI_WATCHED[ticker]
+    ? `Watching ${RISK_DATA[ticker]?.name||ticker} — you'll be notified when risk level changes.`
+    : `Stopped watching ${RISK_DATA[ticker]?.name||ticker}.`;
+  showToast(msg);
+}
+
+function updateWatchBtn() {
+  const btn   = document.getElementById('ri-watch-btn');
+  const label = document.getElementById('ri-watch-label');
+  if(!btn||!label) return;
+  const watching = !!RI_WATCHED[ticker];
+  btn.classList.toggle('watching', watching);
+  label.textContent = watching ? 'Watching' : 'Watch company';
+}
+
+function showToast(msg) {
+  let t = document.getElementById('ri-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'ri-toast';
+    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#0f1018;border:1px solid rgba(201,168,76,.4);border-radius:8px;padding:10px 18px;font-family:JetBrains Mono,monospace;font-size:.68rem;color:#f4f6f9;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>{ t.style.opacity='0'; }, 2800);
 }
 </script>
-<script src="js/ri-styles.js"></script>
 <script src="js/ri-logic.js"></script>
 <script>
-window.addEventListener('DOMContentLoaded', ()=>{
-  runScanAnimation(()=>renderRiskIntel());
-});
+window.addEventListener('DOMContentLoaded', ()=>{ runScanAnimation(()=>renderRI()); });
 </script>
 </body>
 </html>
