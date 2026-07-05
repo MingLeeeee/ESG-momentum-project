@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESG Momentum Engine — Company Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/detail.css">
+</head>
+<body>
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="app.html" class="nav-logo" aria-label="ESG Momentum Engine home">
+    <div class="nav-logo__mark" aria-hidden="true">E</div>
+    <span class="nav-logo__text">ESG <em>Momentum</em></span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="app.html">Home</a></li>
+    <li><a href="app.html#factors">Factors</a></li>
+    <li><a href="app.html#platform" class="active">Platform</a></li>
+    <li><a href="app.html#asean">ASEAN</a></li>
+    <li><a href="app.html#pricing">Pricing</a></li>
+    <li><a href="app.html#partners">Partners</a></li>
+    <li><a href="contact.html" class="nav-cta">Request Demo</a></li>
+  </ul>
+  <button class="nav-hamburger" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <a href="app.html">Home</a>
+  <a href="app.html#factors">Factors</a>
+  <a href="app.html#platform" class="active">Platform</a>
+  <a href="app.html#asean">ASEAN</a>
+  <a href="app.html#pricing">Pricing</a>
+  <a href="app.html#partners">Partners</a>
+  <a href="contact.html" class="nav-cta">Request Demo</a>
+</div>
+
+<div class="page-wrapper detail-page">
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="app.html">Dashboard</a>
+  <span>›</span>
+  <a href="app.html">Companies</a>
+  <span>›</span>
+  <span id="bc-name">Loading…</span>
+</div>
+
+<!-- COMPANY HEADER -->
+<div class="co-header">
+  <div class="co-header-inner">
+    <div class="co-top">
+      <div class="co-left">
+        <div class="co-avatar" id="co-avatar">D</div>
+        <div class="co-name-wrap">
+          <div class="co-full-name" id="co-fullname">Loading…</div>
+          <div class="co-meta">
+            <span class="co-ticker-badge" id="co-ticker">—</span>
+            <span class="co-meta-item" id="co-country">—</span>
+            <span class="co-meta-item" id="co-sector">—</span>
+            <span class="co-meta-item" id="co-exchange">—</span>
+          </div>
+          <div class="co-score-row" style="margin-top:.8rem;">
+            <div class="co-score-big" id="co-score">—</div>
+            <div>
+              <div class="co-score-change" id="co-momentum">—</div>
+              <div style="font-size:.62rem;color:rgba(255,255,255,.3);margin-top:2px;">ESG Overall Score</div>
+            </div>
+            <span class="co-signal-badge" id="co-signal-badge">—</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.25);margin-bottom:.3rem;">Last Updated</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.5);" id="co-updated">—</div>
+        <div style="margin-top:.8rem;display:flex;gap:.5rem;justify-content:flex-end;">
+          <button style="background:transparent;border:1px solid rgba(184,150,62,.3);color:var(--gold2);font-size:.65rem;padding:5px 12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;">+ Watchlist</button>
+          <button style="background:var(--gold);border:none;color:var(--navy);font-size:.65rem;padding:5px 12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">Set Alert</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="co-tabs">
+      <div class="co-tab active" onclick="showPanel('overview',this)">Overview</div>
+      <div class="co-tab" onclick="showPanel('financial',this)">Financial & Debt</div>
+      <div class="co-tab" onclick="showPanel('management',this)">Management</div>
+      <div class="co-tab" onclick="showPanel('reputation',this)">Reputation</div>
+      <div class="co-tab" onclick="showPanel('predictions',this)">AI Predictions</div>
+      <div class="co-tab" onclick="showPanel('geopolitical',this)">Geopolitical</div>
+      <div class="co-tab" onclick="showPanel('peers',this)">Peer Compare</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-area">
+
+  <!-- OVERVIEW PANEL -->
+  <div class="tab-panel active" id="panel-overview">
+    <div class="overview-stack">
+
+      <!-- 1. ESG Snapshot -->
+      <div class="overview-grid wide-left">
+        <div class="card">
+          <div class="card-title">1. ESG Snapshot <span class="card-title-right" id="ov-live">Live · Updated now</span></div>
+          <div class="score-ring-wrap">
+            <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--cream2)" stroke-width="8"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--green)" stroke-width="8"
+                id="score-ring" stroke-dasharray="251" stroke-dashoffset="251"
+                stroke-linecap="round" transform="rotate(-90 50 50)"
+                style="transition:stroke-dashoffset 1.5s cubic-bezier(.16,1,.3,1)"/>
+            </svg>
+            <div class="ring-info">
+              <div class="ring-score" id="ov-score">—</div>
+              <div class="ring-label">ESG Score / 100</div>
+              <div class="ring-momentum" id="ov-momentum">—</div>
+              <div class="benchmark-pill" id="score-benchmark">Benchmark loading…</div>
+              <div style="margin-top:.5rem;" id="ov-signal-small">—</div>
+            </div>
+          </div>
+          <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.5rem;">12-Week ESG Momentum</div>
+          <div class="spark" id="sparkline"></div>
+          <div class="spark-labels" id="spark-labels"></div>
+        </div>
+
+        <!-- 2. ESG Component Breakdown -->
+        <div class="card">
+          <div class="card-title">2. ESG Component Breakdown <span class="card-title-right">vs benchmark</span></div>
+          <div id="esg-components" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;text-align:center;margin-bottom:1rem;">
+            <!-- JS fills -->
+          </div>
+          <div class="radar-wrap">
+            <svg class="radar-svg" id="esg-radar" viewBox="0 0 300 300" role="img" aria-label="ESG radar chart"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. AI Explanation -->
+      <div class="card">
+        <div class="card-title">3. AI Explanation — Why the Score Changed</div>
+        <div class="ai-insight" id="ai-insight">
+          <div class="ai-icon">AI Explanation</div>
+          <div class="ai-text">Loading analysis…</div>
+        </div>
+      </div>
+
+      <!-- 4. Active Alerts -->
+      <div class="card">
+        <div class="card-title">4. Active Alerts <span class="card-title-right" id="alerts-count">—</span></div>
+        <div id="alerts-feed"><!-- JS fills --></div>
+      </div>
+
+      <!-- 5. Investment Driver Analysis -->
+      <div class="overview-grid">
+        <div class="card">
+          <div class="card-title">5. Investment Driver Analysis <span class="card-title-right">modern ESG factors</span></div>
+          <div class="factor-bars" id="factor-bars">
+            <!-- JS fills -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Benchmark Summary</div>
+          <div class="quick-kpi-row">
+            <div class="quick-kpi">
+              <div class="quick-kpi-label">Company ESG</div>
+              <div class="quick-kpi-val" id="bench-company">—</div>
+            </div>
+            <div class="quick-kpi">
+              <div class="quick-kpi-label">Sector Avg</div>
+              <div class="quick-kpi-val" id="bench-sector">—</div>
+            </div>
+            <div class="quick-kpi">
+              <div class="quick-kpi-label">ASEAN Avg</div>
+              <div class="quick-kpi-val" id="bench-asean">64</div>
+            </div>
+          </div>
+          <div class="ai-insight" style="margin-top:1rem;">
+            <div class="ai-icon">Benchmark Insight</div>
+            <div class="ai-text" id="benchmark-insight">Loading benchmark insight…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. AI Prediction Preview -->
+      <div class="card">
+        <div class="card-title">6. AI Prediction Preview <span class="card-title-right">90-day outlook</span></div>
+        <div class="pred-preview-grid" id="prediction-preview"><!-- JS fills --></div>
+        <div class="ai-insight" style="margin-top:1rem;">
+          <div class="ai-icon">Forecast Summary</div>
+          <div class="ai-text" id="forecast-summary">Loading forecast…</div>
+        </div>
+      </div>
+
+      <!-- 7. Peer Comparison -->
+      <div class="card">
+        <div class="card-title">7. Peer Comparison <span class="card-title-right">quick benchmark</span></div>
+        <div id="peer-overview"><!-- JS fills --></div>
+      </div>
+
+      <!-- 8. Investment Signal -->
+      <div id="signal-banner" style="padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border:1px solid;">
+        <div>
+          <div style="font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;" id="sb-label">Investment Signal</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;" id="sb-title">Loading…</div>
+          <div style="font-size:.75rem;color:var(--text2);margin-top:.3rem;font-weight:300;" id="sb-desc">—</div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:700;" id="sb-emoji">—</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FINANCIAL PANEL -->
+  <div class="tab-panel" id="panel-financial">
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:1.2rem;">
+          <div class="card-title">Debt Score</div>
+          <div class="gauge-wrap">
+            <div class="gauge-val" id="debt-val" style="color:var(--green)">—</div>
+            <div class="gauge-label">Debt Management Score / 100</div>
+            <div class="gauge-bar"><div class="gauge-pointer" id="debt-pointer" style="left:50%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--text4);margin-top:.3rem;">
+              <span>High Risk</span><span>Moderate</span><span>Low Risk</span>
+            </div>
+          </div>
+          <div class="ai-insight" id="debt-ai">
+            <div class="ai-icon">AI Debt Analysis</div>
+            <div class="ai-text" id="debt-ai-text">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Financial Health Indicators</div>
+          <div id="fin-rows"><!-- JS fills --></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:1.2rem;">
+          <div class="card-title">Competitive Advantage (Economic Moat)</div>
+          <div style="text-align:center;padding:.5rem 0 1rem;">
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--navy);" id="moat-val">—</div>
+            <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">Moat Score / 100</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;margin-top:.3rem;" id="moat-label">—</div>
+          </div>
+          <div class="moat-grid" id="moat-grid"><!-- JS fills --></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Future Plans & Strategic Outlook</div>
+          <div id="future-rows"><!-- JS fills --></div>
+          <div class="ai-insight" style="margin-top:1rem;" id="future-ai">
+            <div class="ai-icon">AI Plan Assessment</div>
+            <div class="ai-text" id="future-ai-text">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGEMENT PANEL -->
+  <div class="tab-panel" id="panel-management">
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:1.2rem;">
+          <div class="card-title">Chief Executive Officer</div>
+          <div class="ceo-card" id="ceo-card"><!-- JS fills --></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Chief Financial Officer</div>
+          <div class="ceo-card" id="cfo-card"><!-- JS fills --></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:1.2rem;">
+          <div class="card-title">Leadership Score</div>
+          <div class="factor-bars" id="mgmt-bars"><!-- JS fills --></div>
+          <div class="ai-insight" style="margin-top:1rem;" id="mgmt-ai">
+            <div class="ai-icon">AI Management Assessment</div>
+            <div class="ai-text" id="mgmt-ai-text">—</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Leadership Change History</div>
+          <div id="change-timeline"><!-- JS fills --></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPUTATION PANEL -->
+  <div class="tab-panel" id="panel-reputation">
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:1.2rem;">
+          <div class="card-title">Reputation Score</div>
+          <div style="text-align:center;padding:.5rem 0 .8rem;">
+            <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;" id="rep-val">—</div>
+            <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">Reputation Score / 100</div>
+          </div>
+          <div class="ai-insight" id="rep-ai">
+            <div class="ai-icon">AI Reputation Analysis</div>
+            <div class="ai-text" id="rep-ai-text">—</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Allegation Monitor</div>
+          <div id="allegation-feed"><!-- JS fills --></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title">ESG Event Timeline</div>
+          <div id="rep-timeline"><!-- JS fills --></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI PREDICTIONS PANEL -->
+<div class="tab-panel" id="panel-predictions">
+  <div class="ai-forecast-grid">
+    <div class="card ai-forecast-card">
+      <div class="card-title">
+        AI Factor Score Prediction
+        <span id="risk-horizon-label">(90-Day)</span>
+      </div>
+      <div class="horizon-toggle" style="margin-bottom:1rem;">
+        <button class="horizon-btn active" data-horizon="90D">90D</button>
+        <button class="horizon-btn" data-horizon="1Y">1Y</button>
+        <button class="horizon-btn" data-horizon="3Y">3Y</button>
+      </div>
+      <div id="factor-prediction-table"><!-- JS fills --></div>
+    </div>
+
+    <div class="card ai-forecast-card">
+      <div class="card-title">AI Opportunity Forecast</div>
+      <div id="opportunity-forecast"><!-- JS fills --></div>
+    </div>
+
+    <div class="card ai-forecast-card">
+      <div class="card-title">AI Risk Forecast</div>
+      <div id="pred-meters"><!-- JS fills --></div>
+    </div>
+
+    <div class="card ai-forecast-card">
+      <div class="card-title">Early Warning Alerts + AI Recommendation</div>
+      <div id="early-warning-alerts"><!-- JS fills --></div>
+      <div class="ai-final-rec" id="pred-ai">
+        <div class="ai-icon">AI Investment Analysis</div>
+        <div class="ai-text" id="pred-ai-text">-</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- GEOPOLITICAL PANEL -->
+  <div class="tab-panel" id="panel-geopolitical">
+    <div class="two-col geo-top-grid">
+      <div class="card">
+        <div class="card-title">Regional Risk Score</div>
+        <div style="text-align:center;padding:.5rem 0 .8rem;">
+          <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;" id="geo-val">—</div>
+          <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);" id="geo-country-label">—</div>
+        </div>
+        <div class="geo-risk-meta">
+          <div>
+            <span>Risk Level</span>
+            <b id="geo-risk-level">—</b>
+          </div>
+          <div>
+            <span>Main Driver</span>
+            <b id="geo-main-driver">—</b>
+          </div>
+        </div>
+        <div class="ai-insight" id="geo-ai">
+          <div class="ai-icon">AI Geopolitical Analysis</div>
+          <div class="ai-text" id="geo-ai-text">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ASEAN Exposure Map</div>
+        <div class="asean-map-wrap">
+          <svg class="asean-map" viewBox="0 0 620 410" role="img" aria-label="ASEAN exposure map">
+            <defs>
+              <radialGradient id="seaGlow" cx="58%" cy="35%" r="72%">
+                <stop offset="0" stop-color="rgba(20,58,91,.72)"/>
+                <stop offset="62%" stop-color="rgba(9,20,46,.96)"/>
+                <stop offset="100%" stop-color="rgba(4,10,28,1)"/>
+              </radialGradient>
+              <linearGradient id="landGlow" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="rgba(35,68,98,.72)"/>
+                <stop offset="100%" stop-color="rgba(11,24,48,.72)"/>
+              </linearGradient>
+              <filter id="markerGlow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="620" height="410" rx="14" fill="url(#seaGlow)"/>
+            <g class="map-grid-lines">
+              <path d="M80 0 V410 M190 0 V410 M300 0 V410 M410 0 V410 M520 0 V410"/>
+              <path d="M0 70 H620 M0 155 H620 M0 240 H620 M0 325 H620"/>
+            </g>
+            <g class="asean-coast">
+              <path class="map-land" d="M206 44 C229 56 245 82 242 111 C239 136 221 148 211 168 C197 195 211 220 237 244 C205 244 178 228 163 201 C146 171 145 130 153 99 C160 74 174 53 206 44Z"/>
+              <path class="map-land" d="M250 57 C283 73 306 101 303 132 C299 164 280 185 276 215 C259 185 258 151 266 123 C273 98 261 75 250 57Z"/>
+              <path class="map-land" d="M308 64 C338 89 348 124 335 160 C326 188 302 203 288 231 C282 192 294 160 306 128 C313 106 313 85 308 64Z"/>
+              <path class="map-land" d="M220 207 C245 224 262 252 263 293 C239 273 223 244 220 207Z"/>
+              <path class="map-land" d="M116 281 C168 257 234 260 287 291 C228 320 169 316 116 281Z"/>
+              <path class="map-land" d="M288 266 C362 228 450 241 499 292 C427 331 344 322 288 266Z"/>
+              <path class="map-land" d="M381 214 C416 199 455 208 482 238 C443 248 407 239 381 214Z"/>
+              <path class="map-land" d="M480 101 C510 106 531 128 529 158 C497 158 477 137 480 101Z"/>
+              <path class="map-land" d="M520 174 C547 180 565 204 558 232 C529 229 511 204 520 174Z"/>
+              <path class="map-island" d="M467 191 C480 195 489 206 487 219 C473 218 463 207 467 191Z"/>
+              <circle class="map-island" cx="499" cy="181" r="7"/>
+              <circle class="map-island" cx="538" cy="157" r="6"/>
+              <path class="map-island" d="M308 315 C345 301 385 304 421 326 C378 345 339 341 308 315Z"/>
+              <path class="map-island" d="M196 329 C244 322 297 329 341 351 C286 366 235 360 196 329Z"/>
+              <circle class="map-island" cx="270" cy="228" r="3"/>
+            </g>
+            <path class="map-route" d="M132 274 C176 249 221 238 272 229"/>
+            <text class="map-route-label" x="114" y="252">Strait of Malacca</text>
+            <g id="asean-map-markers"></g>
+          </svg>
+        </div>
+        <div class="map-legend">
+          <span><i class="legend-dot low"></i>Low</span>
+          <span><i class="legend-dot med"></i>Watch</span>
+          <span><i class="legend-dot high"></i>High</span>
+        </div>
+        <div id="asean-exposure-list" class="asean-exposure-list"><!-- JS fills --></div>
+      </div>
+    </div>
+
+    <div class="card geo-event-card">
+      <div class="card-title">
+        Geopolitical Event Monitor
+        <span class="card-title-right">Regional / Country / Trade Route</span>
+      </div>
+      <div style="font-size:.72rem;color:var(--text2);line-height:1.6;margin-bottom:1rem;font-weight:300;" id="geo-event-summary">—</div>
+      <div id="geo-event-items" class="geo-event-grid"><!-- JS fills --></div>
+    </div>
+  </div>
+
+  <!-- PEER COMPARE PANEL -->
+  <div class="tab-panel" id="panel-peers">
+    <div class="card" style="margin-bottom:1.2rem;">
+      <div class="card-title">Peer Comparison — <span id="peer-sector">—</span> Sector</div>
+      <div id="peer-bars" style="margin-bottom:1.5rem;"><!-- JS fills --></div>
+      <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.7rem;">Multi-Factor Comparison</div>
+      <div id="peer-multi-rows"><!-- JS fills --></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Industry Benchmarking</div>
+      <div id="industry-bench"><!-- JS fills --></div>
+    </div>
+  </div>
+
+</div><!-- /content-area -->
+</div>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+    <div>
+      <a href="app.html" class="nav-logo" aria-label="ESG Momentum Engine home">
+        <div class="nav-logo__mark" aria-hidden="true">E</div>
+        <span class="nav-logo__text">ESG <em>Momentum</em></span>
+      </a>
+      <p class="footer-brand__tagline">Real-time predictive ESG intelligence for ASEAN capital markets. Transforming how institutional investors see risk and opportunity.</p>
+      <div class="footer-brand__badges"><span class="footer-brand__badge">🇸🇬 Singapore</span><span class="footer-brand__badge">CGSI Partner</span><span class="footer-brand__badge">AI-Powered</span></div>
+    </div>
+    <div><div class="footer-col__title">Platform</div><ul class="footer-col__links"><li><a href="app.html#platform">Dashboard</a></li><li><a href="platform.html#api">API Documentation</a></li><li><a href="platform.html#scores">ESG Scores</a></li><li><a href="app.html#value">Momentum Tracker</a></li><li><a href="platform.html#geo">Geopolitical Feed</a></li></ul></div>
+    <div><div class="footer-col__title">Company</div><ul class="footer-col__links"><li><a href="about.html">About Us</a></li><li><a href="methodology.html">Methodology</a></li><li><a href="app.html#partners">Partners</a></li><li><a href="research.html">Research</a></li><li><a href="careers.html">Careers</a></li></ul></div>
+    <div><div class="footer-col__title">Resources</div><ul class="footer-col__links"><li><a href="whitepaper.html">ESG Whitepaper</a></li><li><a href="asean-guide.html">ASEAN Market Guide</a></li><li><a href="cgsi.html">CGSI Framework</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+  </div>
+  <div class="site-footer__bottom">
+    <span class="footer-copy">© 2025 ESG Momentum Engine Pte. Ltd. · Singapore · UEN 202500000Z</span>
+    <nav class="footer-legal" aria-label="Legal links"><a href="privacy.html">Privacy Policy</a><span aria-hidden="true">·</span><a href="terms.html">Terms of Service</a><span aria-hidden="true">·</span><a href="disclaimer.html">Disclaimer</a></nav>
+  </div>
+</footer>
+
+<script src="js/detail.js"></script>
+
+</body>
+</html>
